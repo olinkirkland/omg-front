@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                styleName="DynamicPanImageComponent"
+                creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+<![CDATA[
+        import com.greensock.TweenLite;
+
+        import managers.AssetManager;
+
+        import mx.events.FlexEvent;
+        
+        import spark.components.Image;
+        
+        [Bindable]
+        public var source: *;
+        [Bindable]
+        public var color: uint = 0xffffff;
+        
+        private var image: Image = new Image();
+        private var imageMask: Sprite = new Sprite();
+        private var imageColorPreloader: Sprite = new Sprite();
+        private var margin: int = 20;
+        private var center: Point;
+        
+        private var assetManager: AssetManager;
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            assetManager = AssetManager.getInstance();
+            
+            // Image
+            var asset: BitmapData;
+            if (source is String)
+                asset = assetManager.get(source);
+            
+            image.source = asset ? asset : source;
+            image.fillMode = "scale";
+            image.scaleMode = "zoom";
+            image.x = -margin;
+            image.y = -margin;
+            
+            if (!asset)
+            {
+                // Color Preloader
+                imageColorPreloader.graphics.beginFill(color);
+                imageColorPreloader.graphics.drawRect(0, 0, 100, 100);
+                imageColorPreloader.graphics.endFill();
+                addChild(imageColorPreloader);
+            }
+            
+            addChild(image);
+            
+            // Mask
+            imageMask.graphics.beginFill(0xff0000);
+            imageMask.graphics.drawRect(0, 0, 100, 100);
+            imageMask.graphics.endFill();
+            addChild(imageMask);
+            
+            image.mask = imageMask;
+            
+            // Resize
+            addEventListener(Event.RESIZE, onResize);
+            onResize(null);
+            
+            // Mouse
+            addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+            addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+            
+            invalidateSize();
+            invalidateDisplayList();
+        }
+        
+        private function onMouseMove(event: MouseEvent): void
+        {
+            // Set goals
+            var goalX: Number = -margin + (center.x - mouseX) / (imageMask.width / 2) * margin;
+            var goalY: Number = -margin + (center.y - mouseY) / (imageMask.height / 2) * margin;
+            
+            // Tween
+            TweenLite.killTweensOf(image);
+            TweenLite.to(image, .1, {x: goalX, y: goalY});
+        }
+        
+        private function onMouseOut(event: MouseEvent): void
+        {
+            TweenLite.to(image, .5, {x: -margin, y: -margin});
+        }
+        
+        private function onResize(event: Event): void
+        {
+            imageMask.width = width;
+            imageMask.height = height;
+            image.width = width + margin * 2;
+            image.height = height + margin * 2;
+            imageColorPreloader.width = width;
+            imageColorPreloader.height = height;
+            center = new Point(imageMask.width / 2, imageMask.height / 2);
+        }
+        ]]>
+    </fx:Script>
+
+</mx:UIComponent>

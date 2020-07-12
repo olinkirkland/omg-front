@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<popups:BasePopup xmlns:fx="http://ns.adobe.com/mxml/2009"
+                  xmlns:s="library://ns.adobe.com/flex/spark"
+                  xmlns:components="components.*"
+                  xmlns:popups="popups.*"
+                  creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+        <![CDATA[
+        import managers.LanguageManager;
+        import managers.SettingsManager;
+    
+        import mx.events.FlexEvent;
+    
+        private var settingsManager: SettingsManager;
+    
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            settingsManager = SettingsManager.getInstance();
+        
+            // Text
+            titleLabel.text = LanguageManager.getText("labelSettings");
+            highQualityLabel.text = LanguageManager.getText("labelHighQuality");
+            highQualityDescriptionLabel.text = LanguageManager.getText("labelHighQualityDescription");
+            highResolutionWallpapersLabel.text = LanguageManager.getText("labelHighResolutionWallpapers");
+            highResolutionWallpapersDescriptionLabel.text = LanguageManager.getText("labelHighResolutionWallpapersDescription");
+            applyButton.text = LanguageManager.getText("buttonApplySettings");
+            versionLabel.text = LanguageManager.getText("labelVersion") + ": " + Service.VERSION + "\n" + LanguageManager.getText("labelVersionId") + ": " + Service.VERSION_ID;
+        
+            // Checkboxes
+            if (settingsManager.settings.highQuality)
+                highQualityCheckbox.select();
+            if (settingsManager.settings.highResolutionWallpapers)
+                highResolutionWallpapersCheckbox.select();
+        
+            // Add Listeners
+            closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
+            applyButton.addEventListener(MouseEvent.CLICK, onButtonApply);
+        }
+    
+        override public function dispose(): void
+        {
+            super.dispose();
+        
+            // Remove Listeners
+            closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
+        }
+    
+        private function onButtonClose(event: MouseEvent): void
+        {
+            end();
+        }
+    
+        private function onButtonApply(event: MouseEvent): void
+        {
+            settingsManager.settings.highQuality = highQualityCheckbox.selected;
+            settingsManager.settings.highResolutionWallpapers = highResolutionWallpapersCheckbox.selected;
+        
+            // Apply quality
+            signalManager.dispatch({setQuality: settingsManager.settings.highQuality ? StageQuality.BEST : StageQuality.LOW});
+        }
+        ]]>
+    </fx:Script>
+    
+    <s:Panel skinClass="skins.PanelSkin"
+             width="400"
+             minHeight="60"
+             maxHeight="600">
+        
+        <s:BitmapImage id="bitmapImage"
+                       smooth="true"
+                       smoothingQuality="high" />
+        
+        <s:VGroup id="content"
+                  width="100%"
+                  height="100%"
+                  gap="0">
+            <s:Panel skinClass="skins.NestedPanelSkin"
+                     width="100%">
+                <s:HGroup width="100%"
+                          gap="10"
+                          padding="5">
+                    <s:HGroup width="100%"
+                              padding="10">
+                        <s:Label id="titleLabel"
+                                 fontSize="20"
+                                 fontWeight="bold"
+                                 width="100%" />
+                    </s:HGroup>
+                    <components:CloseButtonComponent id="closeButton" />
+                </s:HGroup>
+            </s:Panel>
+            <s:VGroup width="100%"
+                      height="100%"
+                      padding="10"
+                      gap="4">
+                <s:HGroup width="100%"
+                          padding="4"
+                          verticalAlign="middle">
+                    <s:Label id="versionLabel"
+                             fontSize="12" />
+                </s:HGroup>
+                <s:VGroup width="100%"
+                          gap="10">
+                    <s:HGroup width="100%"
+                              padding="4"
+                              gap="12"
+                              verticalAlign="middle">
+                        <components:CheckboxComponent id="highQualityCheckbox" />
+                        <s:VGroup width="100%">
+                            <s:Label id="highQualityLabel"
+                                     width="100%" />
+                            <s:Label id="highQualityDescriptionLabel"
+                                     width="100%"
+                                     fontSize="12" />
+                        </s:VGroup>
+                    </s:HGroup>
+                    <s:HGroup width="100%"
+                              padding="4"
+                              gap="12"
+                              verticalAlign="middle">
+                        <components:CheckboxComponent id="highResolutionWallpapersCheckbox" />
+                        <s:VGroup width="100%">
+                            <s:Label id="highResolutionWallpapersLabel"
+                                     width="100%" />
+                            <s:Label id="highResolutionWallpapersDescriptionLabel"
+                                     width="100%"
+                                     fontSize="12" />
+                        </s:VGroup>
+                    </s:HGroup>
+                </s:VGroup>
+            </s:VGroup>
+            
+            <s:Panel width="100%"
+                     height="60"
+                     skinClass="skins.NestedPanelSkin">
+                <s:VGroup width="100%"
+                          height="100%"
+                          horizontalAlign="center"
+                          verticalAlign="middle">
+                    <components:ButtonComponent id="applyButton"
+                                                style="action" />
+                </s:VGroup>
+            </s:Panel>
+        
+        </s:VGroup>
+    
+    </s:Panel>
+
+</popups:BasePopup>

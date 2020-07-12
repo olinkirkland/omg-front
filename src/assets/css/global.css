@@ -1,0 +1,40 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "components.*";
+
+/*
+Fonts
+ */
+
+@font-face {
+    src: url("/assets/fonts/AvenirNextLTPro-Regular.otf");
+    fontFamily: AvenirEmbedded;
+    fontWeight: normal;
+    fontStyle: normal;
+}
+
+@font-face {
+    src: url("/assets/fonts/AvenirNextLTPro-Bold.otf");
+    fontFamily: AvenirEmbedded;
+    fontWeight: bold;
+    fontStyle: normal;
+}
+
+/*
+Components
+ */
+
+s|VScrollBar {
+    skinClass: ClassReference("skins.VScrollBarSkin");
+}
+
+.ProgressBarComponent {
+    color: #f49f53;
+}
+
+s|Label {
+    fontFamily: AvenirEmbedded;
+    fontWeight: normal;
+    fontSize: 14;
+    color: #999999;
+}

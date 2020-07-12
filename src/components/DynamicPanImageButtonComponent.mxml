@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:components="components.*"
+         width="100%"
+         height="100%"
+         creationComplete="onComplete(event)">
+    <fx:Script><![CDATA[
+        import mx.events.FlexEvent;
+        
+        import signal.SignalManager;
+        
+        
+        [Bindable]
+        public var source: *;
+        [Bindable]
+        public var buttonText: String;
+        [Bindable]
+        public var labelText: String;
+        [Bindable]
+        public var color: uint;
+        
+        public var payload: Object;
+        
+        private var signalManager: SignalManager;
+        
+        private function onComplete(event: FlexEvent): void
+        {
+            signalManager = SignalManager.getInstance();
+            
+            addEventListener(MouseEvent.CLICK,
+                    onClick);
+        }
+        
+        private function onClick(event: MouseEvent): void
+        {
+            if (event.target == button)
+            {
+                if (payload)
+                    signalManager.dispatch(payload);
+                dispatchEvent(event);
+            }
+            else
+            {
+                event.stopImmediatePropagation();
+            }
+        }
+        ]]>
+	</fx:Script>
+    
+    <components:DynamicPanImageComponent id="image"
+                                         width="100%"
+                                         height="100%"
+                                         source="{source}"
+                                         color="{color}" />
+    
+    <s:VGroup width="100%"
+              height="100%"
+              horizontalAlign="center"
+              verticalAlign="middle">
+        <components:ButtonComponent id="button"
+                                    text="{buttonText}" />
+    </s:VGroup>
+    
+    <s:VGroup width="100%"
+              height="100%">
+        <s:VGroup width="100%">
+            <s:Group width="100%">
+                <s:Rect width="100%"
+                        height="100%">
+                    <s:fill>
+                        <s:SolidColor color="0x000000"
+                                      alpha=".6" />
+                    </s:fill>
+                </s:Rect>
+                <s:VGroup width="100%"
+                          padding="10">
+                    <s:Label id="label"
+                             width="100%"
+                             color="0xffffff"
+                             text="{labelText}" />
+                </s:VGroup>
+            </s:Group>
+        </s:VGroup>
+    </s:VGroup>
+</s:Group>

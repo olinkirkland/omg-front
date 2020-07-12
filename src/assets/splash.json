@@ -1,0 +1,51 @@
+{
+  "spotlight": {
+    "image": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-green.jpg",
+    "imageColor": "0x74cc74",
+    "labelText": "Changelog",
+    "buttonText": "Read more",
+    "payload": {
+      "startPopup": {
+        "id": "paper",
+        "payload": "05379ee6-25fe-4b08-86a5-4006049eff7c"
+      }
+    }
+  },
+  "features": [
+    {
+      "image": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-blue.jpg",
+      "imageColor": "0x2a6e9a",
+      "labelText": "A Free Gift - Because We Love You!",
+      "buttonText": "Claim it now",
+      "payload": {
+        "startPopup": {
+          "id": "paper",
+          "payload": "b0af3805-abb5-4327-acec-faeee596c590"
+        }
+      }
+    },
+    {
+      "image": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-black.jpg",
+      "imageColor": "0x0x2e2e2e",
+      "labelText": "Don't Have an Account Yet?",
+      "buttonText": "Sign up",
+      "payload": {
+        "startPopup": {
+          "id": "register"
+        }
+      }
+    },
+    {
+      "image": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-pink.jpg",
+      "imageColor": "0xc772bd",
+      "labelText": "OMG Forever's Roadmap",
+      "buttonText": "Read more",
+      "payload": {
+        "startPopup": {
+          "id": "paper",
+          "payload": "96108132-a60b-4802-b87a-81b40a82b0f5"
+        }
+      }
+    }
+  ]
+}

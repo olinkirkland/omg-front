@@ -1,0 +1,173 @@
+{
+  "27D63528-6474-E20E-3E71-3796DCA21531": {
+    "name": "Coin",
+    "description": "",
+    "excludeFromInventory": true,
+    "price": 0,
+    "value": 0,
+    "tags": [],
+    "type": ""
+  },
+  "1D00839E-0DD7-F7CA-D12A-3796C043BEDC": {
+    "name": "Experience",
+    "description": "",
+    "excludeFromInventory": true,
+    "price": 0,
+    "value": 0,
+    "tags": [],
+    "type": ""
+  },
+  "3DE211BC-5FC3-5080-C420-3796BFD5E405": {
+    "name": "Classic Smile",
+    "description": "Turn that frown upside down!",
+    "excludeFromInventory": false,
+    "price": 250,
+    "value": 250,
+    "tags": [
+      "common",
+      "theme-classic"
+    ],
+    "type": "portrait"
+  },
+  "BADD4B63-E4EC-2A6D-E0B4-3796BF88D28F": {
+    "name": "Classic Shades",
+    "description": "Keep it breezy, y'all",
+    "excludeFromInventory": false,
+    "price": 250,
+    "value": 250,
+    "tags": [
+      "common",
+      "theme-classic"
+    ],
+    "type": "portrait"
+  },
+  "B8453C53-47C1-7DD1-D9A7-3796BF5EF890": {
+    "name": "Classic Wink",
+    "description": "Wink, wink!",
+    "excludeFromInventory": false,
+    "price": 250,
+    "value": 250,
+    "tags": [
+      "common",
+      "theme-classic"
+    ],
+    "type": "portrait"
+  },
+  "A5F9D2F6-ED78-1A54-17DD-3796BF3D5044": {
+    "name": "Classic Panda",
+    "description": "He looks familiar...",
+    "excludeFromInventory": false,
+    "price": 600,
+    "value": 600,
+    "tags": [
+      "rare",
+      "theme-classic"
+    ],
+    "type": "portrait"
+  },
+  "BE86B159-558C-0A98-857A-3796BF1F04F6": {
+    "name": "Rainbow Hair",
+    "description": "Show off your true colors",
+    "excludeFromInventory": false,
+    "price": 1450,
+    "value": 1450,
+    "tags": [
+      "epic",
+      "theme-classic"
+    ],
+    "type": "frame"
+  },
+  "F321862C-6340-8E31-3841-3796BD4E4D1B": {
+    "name": "OMGPOP Charm",
+    "description": "An artifact from a bygone era",
+    "excludeFromInventory": false,
+    "price": 8750,
+    "value": 8750,
+    "tags": [
+      "legendary"
+    ],
+    "type": "charm"
+  },
+  "5AC35E1F-66CE-8120-234E-37AAA531D060": {
+    "name": "Kitty Kat",
+    "description": "They say I've got nine lives",
+    "excludeFromInventory": false,
+    "price": 600,
+    "value": 600,
+    "tags": [
+      "common"
+    ],
+    "type": "frame"
+  },
+  "34B9C649-ECEE-1F26-302B-37CEA04C5B1F": {
+    "name": "Picture Frame",
+    "description": "This rustic picture frame carries itself with dignity",
+    "excludeFromInventory": false,
+    "price": 600,
+    "value": 600,
+    "tags": [
+      "common"
+    ],
+    "type": "frame"
+  },
+  "E9E517FE-5276-1A2B-2A39-612AE105AE2F": {
+    "name": "OMG Black",
+    "description": "It's very black",
+    "excludeFromInventory": false,
+    "price": 0,
+    "value": 100,
+    "tags": [
+      "common"
+    ],
+    "type": "wallpaper",
+    "asset": {
+      "category": "wallpapers",
+      "url": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-black.jpg"
+    }
+  },
+  "FC1DEFC3-ACB5-46DE-7558-612821D4A7AB": {
+    "name": "OMG Blue",
+    "description": "It's very blue",
+    "excludeFromInventory": false,
+    "price": 0,
+    "value": 100,
+    "tags": [
+      "common"
+    ],
+    "type": "wallpaper",
+    "asset": {
+      "category": "wallpapers",
+      "url": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-blue.jpg"
+    }
+  },
+  "DDF11FDD-982E-9EF9-E628-6129F6AB5060": {
+    "name": "OMG Pink",
+    "description": "It's very pink",
+    "excludeFromInventory": false,
+    "price": 0,
+    "value": 100,
+    "tags": [
+      "common"
+    ],
+    "type": "wallpaper",
+    "asset": {
+      "category": "wallpapers",
+      "url": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-pink.jpg"
+    }
+  },
+  "0FC8BE98-B3D9-A11F-921A-61290C44C15A": {
+    "name": "OMG Green",
+    "description": "It's very green",
+    "excludeFromInventory": false,
+    "price": 0,
+    "value": 100,
+    "tags": [
+      "common"
+    ],
+    "type": "wallpaper",
+    "asset": {
+      "category": "wallpapers",
+      "url": "assets/wallpapers/%WALLPAPER_RESOLUTION%/omg-green.jpg"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+    <![CDATA[
+        import mx.events.FlexEvent;
+    
+        import signal.SignalEvent;
+        import signal.SignalManager;
+    
+        protected var payload: Object;
+        protected var signalManager: SignalManager;
+    
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            // Signal Manager
+            signalManager = SignalManager.getInstance();
+            signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
+        
+            // Force Resize
+            invalidateSize();
+            invalidateDisplayList();
+            invalidateParentSizeAndDisplayList();
+        }
+    
+        public function handleSignal(signalEvent: SignalEvent): void
+        {
+            // Handle global Signals
+        }
+    
+        public function dispose(): void
+        {
+            signalManager.removeEventListener(SignalEvent.SIGNAL, handleSignal);
+        }
+        ]]>
+    </fx:Script>
+
+</s:Group>

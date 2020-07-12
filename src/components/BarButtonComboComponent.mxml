@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:components="components.*"
+         creationComplete="onComplete(event)">
+    <fx:Script><![CDATA[
+        import mx.events.FlexEvent;
+        
+        import signal.SignalManager;
+        
+        [Bindable]
+        public var items: Array;
+        
+        private function onComplete(event: FlexEvent): void
+        {
+            button.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+            button.addEventListener(MouseEvent.MOUSE_OUT, onOut);
+            button.addEventListener(MouseEvent.MOUSE_UP, onOver);
+            
+            menu.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+            menu.addEventListener(MouseEvent.MOUSE_OUT, onOut);
+            menu.addEventListener(MouseEvent.MOUSE_UP, onOver);
+            
+            menu.hide();
+        }
+        
+        
+        private function onOver(event: MouseEvent): void
+        {
+            button.onOver();
+            menu.show();
+        }
+        
+        private function onOut(event: MouseEvent): void
+        {
+            button.onOut();
+            menu.hide();
+        }
+        
+        public function set text(str: String): void
+        {
+            button.text = str;
+        }
+        
+        override public function get measuredWidth(): Number
+        {
+            return button.width;
+        }
+        
+        override public function get measuredHeight(): Number
+        {
+            return button.height;
+        }
+        ]]>
+	</fx:Script>
+    
+    <components:BarButtonComponent id="button" />
+    <components:BarButtonMenuComponent id="menu"
+                                       items="{items}"
+                                       includeInLayout="false" />
+</s:Group>

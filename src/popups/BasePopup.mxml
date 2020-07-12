@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         initialize="onInitialize(event)">
+    <fx:Script><![CDATA[
+        import com.greensock.TweenLite;
+        import com.greensock.easing.Elastic;
+        
+        import mx.events.FlexEvent;
+        
+        import signal.SignalEvent;
+        
+        import signal.SignalManager;
+        
+        import spark.primitives.BitmapImage;
+        
+        public var bitmapImage: BitmapImage;
+        public var content: Group;
+        public var active: Boolean = false;
+        public var animating: Boolean = false;
+        public var payload: Object;
+        
+        protected var signalManager: SignalManager;
+        
+        private function onInitialize(event: FlexEvent): void
+        {
+            visible = false;
+            signalManager = SignalManager.getInstance();
+            signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
+        }
+        
+        public function handleSignal(signalEvent: SignalEvent): void
+        {
+            // Handle global Signals
+        }
+        
+        public function dispose(): void
+        {
+            // Dispose
+            signalManager.removeEventListener(SignalEvent.SIGNAL, handleSignal);
+        }
+        
+        private function set animationMode(b: Boolean): void
+        {
+            if (b)
+            {
+                // Cache the content as a bitmap and show it
+                bitmapImage.source = null;
+                var bitmapData: BitmapData = new BitmapData(content.width,
+                        content.height,
+                        true,
+                        0x000000);
+                bitmapData.draw(content);
+                bitmapImage.source = bitmapData;
+                
+                bitmapImage.visible = true;
+                content.visible = false;
+            }
+            else
+            {
+                // Hide the bitmap
+                bitmapImage.visible = false;
+                content.visible = true;
+            }
+        }
+        
+        public function start(): void
+        {
+            visible = true;
+            animationMode = true;
+            TweenLite.killTweensOf(this);
+            
+            animating = true;
+            TweenLite.fromTo(this,
+                    .6,
+                    {
+                        scaleX: .8,
+                        scaleY: .8,
+                        alpha:  1
+                    },
+                    {
+                        scaleX:     1,
+                        scaleY:     1,
+                        alpha:      1,
+                        ease:       Elastic.easeOut,
+                        onComplete: onStartTweenComplete
+                    });
+        }
+        
+        private function onStartTweenComplete(): void
+        {
+            animating = false;
+            animationMode = false;
+            active = true;
+        }
+        
+        public function end(): void
+        {
+            animationMode = true;
+            TweenLite.killTweensOf(this);
+            
+            animating = true;
+            TweenLite.fromTo(this,
+                    .2,
+                    {
+                        scaleX: 1,
+                        scaleY: 1,
+                        alpha:  1
+                    },
+                    {
+                        scaleX:     .9,
+                        scaleY:     .9,
+                        alpha:      0,
+                        onComplete: onEndTweenComplete
+                    });
+        }
+        
+        private function onEndTweenComplete(): void
+        {
+            animating = false;
+            animationMode = false;
+            active = false;
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
+        ]]></fx:Script>
+</s:Group>

@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                styleName="InputComponent"
+                initialize="onInitialize(event)"
+                creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+        
+        private var nested: Asset_Input;
+        private var _password: Boolean = false;
+        
+        private function onInitialize(event: FlexEvent): void
+        {
+            nested = new Asset_Input();
+            height = nested.height;
+        }
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            addChild(nested);
+            
+            invalidateSize();
+            
+            nested.txt.text = "";
+            
+            nested.txt.addEventListener(Event.CHANGE, function (e: Event): void
+            {
+                checkPreview(e);
+                dispatchEvent(e);
+            });
+            
+            nested.txt.addEventListener(FocusEvent.FOCUS_IN, function (e: Event): void
+            {
+                nested.txtPreview.visible = false;
+            });
+            
+            nested.txt.addEventListener(FocusEvent.FOCUS_OUT, function (e: Event): void
+            {
+                checkPreview(null);
+            });
+            
+            checkPreview(null);
+            
+            nested.txt.displayAsPassword = _password;
+        }
+        
+        private function checkPreview(e: Event): void
+        {
+            if (nested.txt.text.length == 0)
+                nested.txtPreview.visible = true;
+            else
+                nested.txtPreview.visible = false;
+        }
+        
+        override public function get width(): Number
+        {
+            return nested.background.width;
+        }
+        
+        override public function get height(): Number
+        {
+            return nested.background.height;
+        }
+        
+        override public function set width(w: Number): void
+        {
+            callLater(laterWidth);
+            
+            function laterWidth(): void
+            {
+                nested.background.width = w;
+                nested.txt.width = nested.background.width - (nested.txt.x * 2);
+                nested.txtPreview.width = nested.txt.width;
+                
+                invalidateSize();
+                invalidateParentSizeAndDisplayList();
+            }
+        }
+        
+        public function get text(): String
+        {
+            return nested.txt.text;
+        }
+        
+        public function set text(str: String): void
+        {
+            nested.txt.text = str;
+            checkPreview(null);
+        }
+        
+        public function get preview(): String
+        {
+            return nested.txtPreview.text;
+        }
+        
+        public function set preview(str: String): void
+        {
+            nested.txtPreview.text = str;
+        }
+        
+        public function set password(b: Boolean): void
+        {
+            _password = b;
+            if (nested)
+                nested.txt.displayAsPassword = b;
+        }
+        
+        public function get password(): Boolean
+        {
+            return nested.txt.displayAsPassword;
+        }
+        
+        public function set noSpaces(b: Boolean): void
+        {
+            if (b)
+                nested.txt.restrict = "^ ";
+            else
+                nested.txt.restrict = null;
+        }
+        
+        public function set restrict(str: String): void
+        {
+            nested.txt.restrict = str;
+        }
+        
+        public function get noSpaces(): Boolean
+        {
+            return nested.txt.restrict != null;
+        }
+        ]]>
+    </fx:Script>
+</mx:UIComponent>

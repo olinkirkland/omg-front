@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                styleName="ChatItemRenderer"
+                autoDrawBackground="false"
+                width="100%"
+                height="100%"
+                creationComplete="onCreationComplete(event)">
+
+    <fx:Script>
+		<![CDATA[
+        import flashx.textLayout.edit.IEditManager;
+        import flashx.textLayout.events.StatusChangeEvent;
+        import flashx.textLayout.formats.TextLayoutFormat;
+
+        import mx.events.FlexEvent;
+        import mx.utils.ObjectUtil;
+
+        override public function set data(value: Object): void
+        {
+            super.data = ObjectUtil.clone(value);
+
+            if (initialized)
+            {
+                update();
+            }
+        }
+
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            update();
+        }
+
+        private function update(): void
+        {
+            richText.text = "";
+            richTextGroup.horizontalAlign = (data.sender == "me") ? "right" : "left";
+            bubbleRect.fill["color"] = (data.sender == "me") ? 0x007aff : 0xf5f5f5;
+
+            // Break down the message
+            var messageArray: Array = data.message ? data.message.split(/(<emote>\w+<\/emote>)/) : [];
+
+            // Set up the textArea
+            var format: TextLayoutFormat = new TextLayoutFormat();
+            format.fontSize = 16;
+            format.color = (data.sender == "me") ? 0xffffff : 0x000000;
+            richText.textFlow.hostFormat = format;
+
+            richText.textFlow.interactionManager.selectLastPosition();
+
+            // Fill the textArea
+            for each (var seg: String in messageArray)
+            {
+                if (seg.match(/(<emote>\w+<\/emote>)/))
+                {
+                    // Emote
+                    richText.editable = true;
+                    var size: int = int(richText.textFlow.hostFormat.fontSize * 1);
+                    IEditManager(richText.textFlow.interactionManager).insertInlineGraphic(Service.getImage("EMOTE_" + /<emote>(\w+)<\/emote>/.exec(seg)[1].toUpperCase(), size, size),
+                            size,
+                            size);
+                    richText.editable = false;
+                }
+                else
+                {
+                    // Text
+                    richText.editable = true;
+                    IEditManager(richText.textFlow.interactionManager).insertText(seg);
+                    richText.editable = false;
+                }
+            }
+
+            richText.textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE,
+                    function (e: StatusChangeEvent): void
+                    {
+                        IEditManager(richText.textFlow.interactionManager).updateAllControllers();
+                    });
+        }
+        ]]>
+	</fx:Script>
+
+    <s:VGroup width="100%"
+              padding="10">
+        <s:VGroup id="richTextGroup"
+                  width="100%">
+            <s:Group>
+                <s:Rect id="bubbleRect"
+                        radiusX="10"
+                        radiusY="10"
+                        width="100%"
+                        height="100%">
+                    <s:fill>
+                        <s:SolidColor id="color"
+                                      color="0xf5f5f5">
+                        </s:SolidColor>
+                    </s:fill>
+                </s:Rect>
+                <s:VGroup padding="10">
+                    <s:RichEditableText id="richText"
+                                        width="200">
+                    </s:RichEditableText>
+                </s:VGroup>
+            </s:Group>
+        </s:VGroup>
+    </s:VGroup>
+
+</s:ItemRenderer>

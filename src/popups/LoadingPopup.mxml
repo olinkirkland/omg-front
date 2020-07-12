@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<popups:BasePopup xmlns:fx="http://ns.adobe.com/mxml/2009"
+                  xmlns:s="library://ns.adobe.com/flex/spark"
+                  xmlns:popups="popups.*"
+                  xmlns:components="components.*"
+                  creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+        }
+        ]]>
+    </fx:Script>
+    
+    <s:Panel skinClass="skins.PanelSkin">
+        
+        <s:BitmapImage id="bitmapImage"
+                       smooth="true"
+                       smoothingQuality="high" />
+        
+        <s:VGroup id="content"
+                  width="100%"
+                  horizontalAlign="center"
+                  padding="4">
+            <components:IndefiniteLoadingAnimationComponent />
+        </s:VGroup>
+    
+    </s:Panel>
+
+</popups:BasePopup>

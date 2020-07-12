@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="onCreationComplete(event)"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         width="100%"
+         height="100%"
+         skinClass="skins.PanelSkin">
+    
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+        
+        import pages.Page;
+        
+        import pages.SplashPage;
+        
+        import signal.SignalEvent;
+        import signal.SignalManager;
+        
+        private var signalManager: SignalManager;
+        private var page: *;
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            // Signal Manager
+            signalManager = SignalManager.getInstance();
+            signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
+            
+            // Force Resize
+            invalidateSize();
+            invalidateDisplayList();
+            invalidateParentSizeAndDisplayList();
+        }
+        
+        public function handleSignal(signalEvent: SignalEvent): void
+        {
+            // Handle global Signals
+            var payload: Object = signalEvent.payload;
+            
+            // Open a page
+            if (payload.hasOwnProperty("loadPage"))
+                loadPage(payload.loadPage.id);
+        }
+        
+        public function loadPage(id: String): void
+        {
+            // Unload current page
+            if (page)
+            {
+                (page as Page).dispose();
+                removeElement(page);
+                page = null;
+            }
+            
+            // Load new page
+            if (id == "splash")
+            {
+                // Load the Splash page by default
+                page = new SplashPage();
+                callLater(function (): void
+                {
+                    addElement(page);
+                });
+            }
+        }
+        ]]>
+    </fx:Script>
+
+</s:Panel>

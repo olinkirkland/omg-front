@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                initialize="onInitialize(event)"
+                creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+        
+        private var nested: Asset_Button;
+        private var _text: String = "Lorem ipsum";
+        private var _style: String = "normal";
+        private var fixedWidth: Boolean = false;
+        
+        private function onInitialize(event: FlexEvent): void
+        {
+            nested = new Asset_Button();
+            height = nested.height;
+            
+            nested.gotoAndStop(_style);
+            nested.background.gotoAndStop("out");
+            
+            
+            mouseChildren = false;
+            
+            
+            addEventListener(MouseEvent.MOUSE_OVER, onOver);
+            addEventListener(MouseEvent.MOUSE_OUT, onOut);
+            addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+            addEventListener(MouseEvent.MOUSE_UP, onOver);
+        }
+        
+        public function set style(str: String): void
+        {
+            _style = str;
+            if (nested)
+            {
+                var w: Number = nested.background.width;
+                nested.gotoAndStop(_style);
+                nested.background.width = w;
+                nested.background.gotoAndStop("out");
+            }
+        }
+        
+        public function get style(): String
+        {
+            return _style;
+        }
+        
+        public function set text(str: String): void
+        {
+            _text = str;
+            if (nested)
+            {
+                nested.txt.text = _text.toUpperCase();
+                if (!fixedWidth)
+                {
+                    nested.txt.width = nested.txt.textWidth + 40;
+                    nested.background.width = nested.txt.width;
+                }
+                
+                invalidateSize();
+                invalidateParentSizeAndDisplayList();
+            }
+        }
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            addChild(nested);
+            
+            text = _text;
+            
+            invalidateSize();
+            invalidateParentSizeAndDisplayList();
+        }
+        
+        override protected function measure(): void
+        {
+            measuredWidth = width;
+            measuredHeight = height;
+        }
+        
+        public function onOver(e: Event = null): void
+        {
+            nested.background.gotoAndStop("over");
+        }
+        
+        public function onOut(e: Event = null): void
+        {
+            nested.background.gotoAndStop("out");
+        }
+        
+        public function onDown(e: Event = null): void
+        {
+            nested.background.gotoAndStop("down");
+        }
+        
+        override public function set width(w: Number): void
+        {
+            callLater(function (): void
+            {
+                fixedWidth = true;
+                nested.txt.width = w;
+                nested.background.width = nested.txt.width;
+                
+                invalidateSize();
+                invalidateParentSizeAndDisplayList();
+            });
+        }
+        
+        override public function get width(): Number
+        {
+            return nested.background.width;
+        }
+        
+        override public function get height(): Number
+        {
+            return nested.background.height;
+        }
+        ]]>
+    </fx:Script>
+</mx:UIComponent>

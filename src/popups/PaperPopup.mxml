@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<popups:BasePopup xmlns:fx="http://ns.adobe.com/mxml/2009"
+                  xmlns:s="library://ns.adobe.com/flex/spark"
+                  xmlns:components="components.*"
+                  xmlns:popups="popups.*"
+                  creationComplete="onCreationComplete(event)">
+    
+    <fx:Script>
+        <![CDATA[
+        import components.IndefiniteLoadingAnimationComponent;
+        
+        import mx.collections.ArrayCollection;
+        import mx.events.FlexEvent;
+        
+        import signal.SignalEvent;
+        
+        private var loadingAnimation: IndefiniteLoadingAnimationComponent;
+        private var dataProvider: ArrayCollection;
+        
+        private function onCreationComplete(event: FlexEvent): void
+        {
+            // Load
+            signalManager.dispatch({send: {request: {category: "paper", id: payload}}});
+            
+            // Show loading
+            loadingAnimation = new IndefiniteLoadingAnimationComponent();
+            loadingAnimationContainer.addElement(loadingAnimation);
+            
+            // Add Listeners
+            closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
+        }
+        
+        override public function dispose(): void
+        {
+            super.dispose();
+            
+            // Remove Listeners
+            closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
+        }
+        
+        override public function handleSignal(signalEvent: SignalEvent): void
+        {
+            // Handle global Signals
+            
+            // Returned Request
+            if (signalEvent.payload.hasOwnProperty("requestReturn") && signalEvent.payload.requestReturn.category == "paper")
+                downloadContent(signalEvent.payload.requestReturn);
+        }
+        
+        public function downloadContent(requestReturn: Object): void
+        {
+            dataProvider = new ArrayCollection();
+            contentList.validateNow();
+            
+            // Download object from url
+            if (requestReturn.data)
+            {
+                var url: String = Service.DOMAIN + requestReturn.data.url + "?" + requestReturn.data.version;
+                var loader: URLLoader = new URLLoader(new URLRequest(url));
+                loader.addEventListener(Event.COMPLETE, onLoaded);
+            }
+            else
+            {
+                // Problem with the content
+                applyContent({content: [{type: "title", data: "Something Went Wrong..."}, {type: "body", data: "Dang it.\nThere was a problem loading this content."}]});
+            }
+        }
+        
+        public function onLoaded(event: Event): void
+        {
+            event.target.removeEventListener(Event.COMPLETE, onLoaded);
+            applyContent(JSON.parse(event.target.data));
+        }
+        
+        public function applyContent(contentData: Object): void
+        {
+            // Apply content
+            for each (var obj: Object in contentData.content)
+            {
+                if (obj.type == "title")
+                    titleLabel.text = obj.data;
+                else
+                    dataProvider.addItem(obj);
+            }
+            
+            contentList.visible = false;
+            contentList.dataProvider = dataProvider;
+            contentList.validateNow();
+            
+            setTimeout(function (): void
+            {
+                // Prepare space
+                loadingAnimationContainer.includeInLayout = false;
+                loadingAnimation.visible = false;
+                contentList.visible = true;
+            }, 50);
+        }
+        
+        private function onButtonClose(event: MouseEvent): void
+        {
+            end();
+        }
+        ]]>
+    </fx:Script>
+    
+    <s:Panel skinClass="skins.PanelSkin"
+             width="400">
+        
+        <s:BitmapImage id="bitmapImage"
+                       smooth="true"
+                       smoothingQuality="high" />
+        
+        <s:VGroup id="content"
+                  width="100%">
+            <s:Panel width="100%"
+                     skinClass="skins.NestedPanelSkin">
+                <s:HGroup width="100%"
+                          gap="10"
+                          padding="5">
+                    <s:HGroup width="100%"
+                              padding="10">
+                        <s:Label id="titleLabel"
+                                 fontSize="20"
+                                 fontWeight="bold"
+                                 width="100%" />
+                    </s:HGroup>
+                    <components:CloseButtonComponent id="closeButton" />
+                </s:HGroup>
+            </s:Panel>
+            <s:VGroup width="100%"
+                      padding="4">
+                <s:List id="contentList"
+                        contentBackgroundAlpha="0"
+                        width="100%"
+                        maxHeight="600"
+                        itemRenderer="components.renderers.PaperItemRenderer"
+                        horizontalScrollPolicy="off"
+                        borderVisible="false">
+                    <s:layout>
+                        <s:VerticalLayout useVirtualLayout="false"
+                                          requestedMinRowCount="1" />
+                    </s:layout>
+                </s:List>
+            </s:VGroup>
+        </s:VGroup>
+        
+        <s:VGroup id="loadingAnimationContainer"
+                  width="100%"
+                  height="100%"
+                  horizontalAlign="center"
+                  verticalAlign="middle" />
+    
+    </s:Panel>
+
+</popups:BasePopup>
