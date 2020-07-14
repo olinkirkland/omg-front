@@ -132,7 +132,6 @@
 
         private function onEndPopup(event:Event):void
         {
-            TweenLite.to(popupShade, .3, {alpha: 0, onComplete: onPopupShadeComplete});
             if (popup)
             {
                 popup.removeEventListener(Event.COMPLETE, onEndPopup);
@@ -144,6 +143,9 @@
                 startPopup(queuedPopupId, queuedPopupPayload);
                 queuedPopupId      = null;
                 queuedPopupPayload = null;
+            } else
+            {
+                TweenLite.to(popupShade, .3, {alpha: 0, onComplete: onPopupShadeComplete});
             }
         }
 

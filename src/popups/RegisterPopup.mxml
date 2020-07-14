@@ -155,11 +155,15 @@
                     <s:TextInput id="inputEmail"
                                  width="100%" />
 
+                    <s:Spacer height="3"/>
+
                     <s:Label width="100%"
                              text="{LanguageManager.getText('labelPassword')}" />
                     <s:TextInput id="inputPassword"
                                  width="100%"
                                  displayAsPassword="true" />
+
+                    <s:Spacer height="3"/>
 
                     <s:Label width="100%"
                              text="{LanguageManager.getText('labelConfirmPassword')}" />
