@@ -36,5 +36,19 @@ s|Label {
     fontFamily: AvenirEmbedded;
     fontWeight: normal;
     fontSize: 14;
-    color: #999999;
+    color: #2d3436;
+    paddingTop: 1;
+}
+
+s|TextInput {
+    focusAlpha: 0;
+    fontFamily: AvenirEmbedded;
+    fontWeight: normal;
+    fontSize: 14;
+    color: #2d3436;
+    skinClass: ClassReference("skins.TextInputSkin");
+}
+
+s|Button {
+    skinClass: ClassReference("skins.buttons.SecondaryButtonSkin");
 }

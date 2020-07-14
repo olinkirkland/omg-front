@@ -4,49 +4,43 @@
                   xmlns:components="components.*"
                   xmlns:popups="popups.*"
                   creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
         import managers.LanguageManager;
-    
+
         import mx.events.FlexEvent;
-    
-        private var valid: Boolean;
-    
-        private function onCreationComplete(event: FlexEvent): void
+
+        private var valid:Boolean;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             // Text
-            titleLabel.text = LanguageManager.getText("labelVerifyEmailTitle");
-            descriptionLabel.text = LanguageManager.getText("labelVerifyEmailBody").replace("%EMAIL%", payload as String);
-            inputVerifyCode.preview = LanguageManager.getText("inputVerifyCodePreview");
-            labelResendVerifyCode.text = LanguageManager.getText("labelResendVerifyCode");
-        
-            buttonResendVerifyCode.text = LanguageManager.getText("buttonResendVerifyCode");
-            buttonSubmitVerifyCode.text = LanguageManager.getText("buttonSubmitVerifyCode");
-        
+            descriptionLabel.text = LanguageManager.getText('labelVerifyEmailBody').replace('%EMAIL%', payload as String);
+
             // Add Listeners
             buttonResendVerifyCode.addEventListener(MouseEvent.CLICK, onResendVerifyCode);
             buttonSubmitVerifyCode.addEventListener(MouseEvent.CLICK, onSubmitVerifyCode);
-        
+
             inputVerifyCode.addEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
             inputVerifyCode.addEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
-        
+
             updateSubmitButton(null);
         }
-    
-        override public function dispose(): void
+
+        override public function dispose():void
         {
             super.dispose();
-        
+
             // Remove listeners
             buttonResendVerifyCode.removeEventListener(MouseEvent.CLICK, onResendVerifyCode);
             buttonSubmitVerifyCode.removeEventListener(MouseEvent.CLICK, onSubmitVerifyCode);
-        
+
             inputVerifyCode.removeEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
             inputVerifyCode.removeEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
         }
-    
-        private function onResendVerifyCode(event: MouseEvent): void
+
+        private function onResendVerifyCode(event:MouseEvent):void
         {
             signalManager.dispatch({
                 action: "resendVerifyCode",
@@ -55,8 +49,8 @@
                 }
             });
         }
-    
-        private function onSubmitVerifyCode(event: MouseEvent): void
+
+        private function onSubmitVerifyCode(event:MouseEvent):void
         {
             signalManager.dispatch({
                 action: "submitVerifyCode",
@@ -65,31 +59,31 @@
                     verifyCode: inputVerifyCode.text
                 }
             });
-        
-            buttonResendVerifyCode.style = "disabled";
-            buttonSubmitVerifyCode.style = "disabled";
+
+            buttonResendVerifyCode.enabled = false;
+            buttonSubmitVerifyCode.enabled = false;
         }
-    
-        private function updateSubmitButton(event: Event): void
+
+        private function updateSubmitButton(event:Event):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
-                valid = inputVerifyCode.text.length != 0;
-                buttonSubmitVerifyCode.style = valid ? "action" : "disabled";
+                valid                          = inputVerifyCode.text.length != 0;
+                buttonSubmitVerifyCode.enabled = valid;
             });
         }
         ]]>
     </fx:Script>
-    
+
     <s:Panel skinClass="skins.PanelSkin"
              width="600"
              minHeight="60"
              maxHeight="600">
-        
+
         <s:BitmapImage id="bitmapImage"
                        smooth="true"
                        smoothingQuality="high" />
-        
+
         <s:VGroup id="content"
                   width="100%"
                   height="100%"
@@ -102,6 +96,7 @@
                     <s:HGroup width="100%"
                               padding="10">
                         <s:Label id="titleLabel"
+                                 text="{LanguageManager.getText('labelVerifyEmailTitle')}"
                                  fontSize="20"
                                  fontWeight="bold"
                                  width="100%" />
@@ -118,8 +113,8 @@
                 <s:Spacer height="20" />
                 <s:HGroup width="100%"
                           horizontalAlign="center">
-                    <components:InputComponent id="inputVerifyCode"
-                                               width="350" />
+                    <s:TextInput id="inputVerifyCode"
+                                 width="350" />
                 </s:HGroup>
                 <s:Spacer height="20" />
             </s:VGroup>
@@ -131,15 +126,17 @@
                           verticalAlign="middle"
                           verticalCenter="0"
                           padding="15">
-                    <components:ButtonComponent id="buttonResendVerifyCode"
-                                                style="normal" />
+                    <s:Button id="buttonResendVerifyCode"
+                              label="{LanguageManager.getText('buttonResendVerifyCode')}" />
                     <s:Label id="labelResendVerifyCode"
+                             text="{LanguageManager.getText('labelResendVerifyCode')}"
                              width="100%" />
                     <s:Spacer width="100%" />
-                    <components:ButtonComponent id="buttonSubmitVerifyCode"
-                                                style="action" />
+                    <s:Button id="buttonSubmitVerifyCode"
+                              label="{LanguageManager.getText('buttonSubmitVerifyCode')}"
+                              skinClass="skins.buttons.PrimaryButtonSkin" />
                 </s:HGroup>
-            
+
             </s:Panel>
         </s:VGroup>
     </s:Panel>

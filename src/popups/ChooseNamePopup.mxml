@@ -4,45 +4,38 @@
                   xmlns:components="components.*"
                   xmlns:popups="popups.*"
                   creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
         import managers.LanguageManager;
-    
+
         import mx.events.FlexEvent;
-    
-        private var valid: Boolean;
-    
-        private function onCreationComplete(event: FlexEvent): void
+
+        private var valid:Boolean;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
-            // Text
-            titleLabel.text = LanguageManager.getText("labelChooseNameTitle");
-            descriptionLabel.text = LanguageManager.getText("labelChooseNameBody");
-            inputSubmitName.preview = LanguageManager.getText("inputChooseNamePreview");
-        
-            buttonSubmitName.text = LanguageManager.getText("buttonSubmitName");
-        
             // Add Listeners
             buttonSubmitName.addEventListener(MouseEvent.CLICK, onSubmitName);
-        
+
             inputSubmitName.addEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
             inputSubmitName.addEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
-        
+
             updateSubmitButton(null);
         }
-    
-        override public function dispose(): void
+
+        override public function dispose():void
         {
             super.dispose();
-        
+
             // Remove listeners
             buttonSubmitName.removeEventListener(MouseEvent.CLICK, onSubmitName);
-        
+
             inputSubmitName.removeEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
             inputSubmitName.removeEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
         }
-    
-        private function onSubmitName(event: MouseEvent): void
+
+        private function onSubmitName(event:MouseEvent):void
         {
             signalManager.dispatch({
                 action: "submitName",
@@ -50,30 +43,30 @@
                     name: inputSubmitName.text
                 }
             });
-        
-            buttonSubmitName.style = "disabled";
+
+            buttonSubmitName.enabled = false;
         }
-    
-        private function updateSubmitButton(event: Event): void
+
+        private function updateSubmitButton(event:Event):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
-                valid = inputSubmitName.text.length != 0;
-                buttonSubmitName.style = valid ? "action" : "disabled";
+                valid                    = inputSubmitName.text.length != 0;
+                buttonSubmitName.enabled = valid;
             });
         }
         ]]>
     </fx:Script>
-    
+
     <s:Panel skinClass="skins.PanelSkin"
              width="600"
              minHeight="60"
              maxHeight="600">
-        
+
         <s:BitmapImage id="bitmapImage"
                        smooth="true"
                        smoothingQuality="high" />
-        
+
         <s:VGroup id="content"
                   width="100%"
                   height="100%"
@@ -86,6 +79,7 @@
                     <s:HGroup width="100%"
                               padding="10">
                         <s:Label id="titleLabel"
+                                 text="{LanguageManager.getText('labelChooseNameTitle')}"
                                  fontSize="20"
                                  fontWeight="bold"
                                  width="100%" />
@@ -96,14 +90,15 @@
                       height="100%"
                       padding="10">
                 <s:Label id="descriptionLabel"
+                         text="{LanguageManager.getText('labelChooseNameBody')}"
                          width="100%"
                          paddingLeft="20"
                          paddingRight="20" />
                 <s:Spacer height="20" />
                 <s:HGroup width="100%"
                           horizontalAlign="center">
-                    <components:InputComponent id="inputSubmitName"
-                                               width="350" />
+                    <s:TextInput id="inputSubmitName"
+                                 width="350" />
                 </s:HGroup>
                 <s:Spacer height="20" />
             </s:VGroup>
@@ -116,10 +111,11 @@
                           verticalCenter="0"
                           padding="15">
                     <s:Spacer width="100%" />
-                    <components:ButtonComponent id="buttonSubmitName"
-                                                style="action" />
+                    <s:Button id="buttonSubmitName"
+                              label="{LanguageManager.getText('buttonSubmitName')}"
+                              skinClass="skins.buttons.PrimaryButtonSkin" />
                 </s:HGroup>
-            
+
             </s:Panel>
         </s:VGroup>
     </s:Panel>

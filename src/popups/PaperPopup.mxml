@@ -8,95 +8,96 @@
     <fx:Script>
         <![CDATA[
         import components.IndefiniteLoadingAnimationComponent;
-        
+
+        import global.Util;
+
         import mx.collections.ArrayCollection;
         import mx.events.FlexEvent;
-        
+
         import signal.SignalEvent;
-        
-        private var loadingAnimation: IndefiniteLoadingAnimationComponent;
-        private var dataProvider: ArrayCollection;
-        
-        private function onCreationComplete(event: FlexEvent): void
+
+        private var loadingAnimation:IndefiniteLoadingAnimationComponent;
+        private var dataProvider:ArrayCollection;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             // Load
             signalManager.dispatch({send: {request: {category: "paper", id: payload}}});
-            
+
             // Show loading
             loadingAnimation = new IndefiniteLoadingAnimationComponent();
             loadingAnimationContainer.addElement(loadingAnimation);
-            
+
             // Add Listeners
             closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
         }
-        
-        override public function dispose(): void
+
+        override public function dispose():void
         {
             super.dispose();
-            
+
             // Remove Listeners
             closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
         }
-        
-        override public function handleSignal(signalEvent: SignalEvent): void
+
+        override public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            
+
             // Returned Request
             if (signalEvent.payload.hasOwnProperty("requestReturn") && signalEvent.payload.requestReturn.category == "paper")
                 downloadContent(signalEvent.payload.requestReturn);
         }
-        
-        public function downloadContent(requestReturn: Object): void
+
+        public function downloadContent(requestReturn:Object):void
         {
             dataProvider = new ArrayCollection();
             contentList.validateNow();
-            
+
             // Download object from url
             if (requestReturn.data)
             {
-                var url: String = Service.DOMAIN + requestReturn.data.url + "?" + requestReturn.data.version;
-                var loader: URLLoader = new URLLoader(new URLRequest(url));
+                var url:String       = Util.DOMAIN + requestReturn.data.url + "?" + requestReturn.data.version;
+                var loader:URLLoader = new URLLoader(new URLRequest(url));
                 loader.addEventListener(Event.COMPLETE, onLoaded);
-            }
-            else
+            } else
             {
                 // Problem with the content
                 applyContent({content: [{type: "title", data: "Something Went Wrong..."}, {type: "body", data: "Dang it.\nThere was a problem loading this content."}]});
             }
         }
-        
-        public function onLoaded(event: Event): void
+
+        public function onLoaded(event:Event):void
         {
             event.target.removeEventListener(Event.COMPLETE, onLoaded);
             applyContent(JSON.parse(event.target.data));
         }
-        
-        public function applyContent(contentData: Object): void
+
+        public function applyContent(contentData:Object):void
         {
             // Apply content
-            for each (var obj: Object in contentData.content)
+            for each (var obj:Object in contentData.content)
             {
                 if (obj.type == "title")
                     titleLabel.text = obj.data;
                 else
                     dataProvider.addItem(obj);
             }
-            
-            contentList.visible = false;
+
+            contentList.visible      = false;
             contentList.dataProvider = dataProvider;
             contentList.validateNow();
-            
-            setTimeout(function (): void
+
+            setTimeout(function ():void
             {
                 // Prepare space
                 loadingAnimationContainer.includeInLayout = false;
-                loadingAnimation.visible = false;
-                contentList.visible = true;
+                loadingAnimation.visible                  = false;
+                contentList.visible                       = true;
             }, 50);
         }
-        
-        private function onButtonClose(event: MouseEvent): void
+
+        private function onButtonClose(event:MouseEvent):void
         {
             end();
         }

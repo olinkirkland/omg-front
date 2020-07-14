@@ -4,133 +4,135 @@
          xmlns:panes="panes.*"
          creationComplete="onCreationComplete(event)"
          xmlns:s="library://ns.adobe.com/flex/spark">
-    
+
     <fx:Script>
         <![CDATA[
+        import com.greensock.TweenLite;
+
         import managers.DataManager;
         import managers.LanguageManager;
-        
+
         import net.Client;
-        
+
         import popups.BasePopup;
-        
+
         import mx.events.FlexEvent;
-        
+
         import popups.PopupFactory;
         import popups.PopupTypes;
-        
+
         import signal.SignalEvent;
-        
+
         import signal.SignalManager;
-        
-        private var popup: BasePopup;
-        private var queuedPopupId: String;
-        private var queuedPopupPayload: Object;
-        private var signalManager: SignalManager;
-        private var dataManager: DataManager;
-        private var client: Client;
-        
-        private function onCreationComplete(event: FlexEvent): void
+
+        private var popup:BasePopup;
+        private var queuedPopupId:String;
+        private var queuedPopupPayload:Object;
+        private var signalManager:SignalManager;
+        private var dataManager:DataManager;
+        private var client:Client;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             // Signal Manager
             signalManager = SignalManager.getInstance();
             signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
-            
+
             // Data Manager
             dataManager = DataManager.getInstance();
             dataManager.addEventListener(DataManager.DATA_UPDATE, handleData);
-            
+
             // Text
-            buttonHome.text = LanguageManager.getText("buttonHome");
-            buttonSocial.text = LanguageManager.getText("buttonSocial");
-            buttonLogin.text = LanguageManager.getText("buttonLogin");
+            buttonHome.text     = LanguageManager.getText("buttonHome");
+            buttonSocial.text   = LanguageManager.getText("buttonSocial");
+            buttonLogin.text    = LanguageManager.getText("buttonLogin");
             buttonRegister.text = LanguageManager.getText("buttonRegister");
             buttonSettings.text = LanguageManager.getText("buttonSettings");
-            
+
             // Event Listeners
-            buttonLogin.addEventListener(MouseEvent.CLICK, function (event: MouseEvent): void
+            buttonLogin.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
                 startPopup(PopupTypes.LOGIN);
             });
-            
-            buttonRegister.addEventListener(MouseEvent.CLICK, function (event: MouseEvent): void
+
+            buttonRegister.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
                 startPopup(PopupTypes.REGISTER);
             });
-            
-            buttonSettings.addEventListener(MouseEvent.CLICK, function (event: MouseEvent): void
+
+            buttonSettings.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
                 startPopup(PopupTypes.SETTINGS);
             });
-            
-            buttonHome.addEventListener(MouseEvent.CLICK, function (event: MouseEvent): void
+
+            buttonHome.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                var command: Object = {"loadPage": {id: "splash"}};
+                var command:Object = {"loadPage": {id: "splash"}};
                 signalManager.dispatch(command);
             });
-            
+
             // Force Resize
             invalidateSize();
             invalidateDisplayList();
             invalidateParentSizeAndDisplayList();
-            
+
             // Initial Actions
             client = new Client();
             client.addEventListener(Event.CONNECT, onConnect);
             client.addEventListener(Event.CLOSE, onDisconnect);
         }
-        
-        public function start(): void
+
+        public function start():void
         {
             // Startup
             startPopup(PopupTypes.LOADING);
             setTimeout(client.create, 1000);
-            
+
             // Initially, Open the Splash page
-            var command: Object = {"loadPage": {id: "splash"}};
+            var command:Object = {"loadPage": {id: "splash"}};
             signalManager.dispatch(command);
-            
+
             updateUserBar();
         }
-        
-        private function onConnect(event: Event): void
+
+        private function onConnect(event:Event):void
         {
             popup.end();
         }
-        
-        private function onDisconnect(event: Event): void
+
+        private function onDisconnect(event:Event):void
         {
             startPopup(PopupTypes.LOADING);
         }
-        
-        private function startPopup(id: String, payload: Object = null): void
+
+        private function startPopup(id:String, payload:Object = null):void
         {
             if (popup)
             {
                 // Close the current Popup and queue the new one to start
                 popup.end();
-                queuedPopupId = id;
+                queuedPopupId      = id;
                 queuedPopupPayload = payload;
-            }
-            else
+            } else
             {
                 // Start the popup
                 popupShade.visible = true;
+                TweenLite.to(popupShade, 1, {alpha: 1, onComplete: onPopupShadeComplete});
                 popup = PopupFactory.makePopup(id);
                 if (popup)
                 {
                     popup.payload = payload;
                     popup.addEventListener(Event.COMPLETE, onEndPopup);
                     popupContainer.addElement(popup);
-                    
+
                     setTimeout(popup.start, 100);
                 }
             }
         }
-        
-        private function onEndPopup(event: Event): void
+
+        private function onEndPopup(event:Event):void
         {
-            popupShade.visible = false;
+            TweenLite.to(popupShade, .3, {alpha: 0, onComplete: onPopupShadeComplete});
             if (popup)
             {
                 popup.removeEventListener(Event.COMPLETE, onEndPopup);
@@ -140,62 +142,67 @@
             if (queuedPopupId)
             {
                 startPopup(queuedPopupId, queuedPopupPayload);
-                queuedPopupId = null;
+                queuedPopupId      = null;
                 queuedPopupPayload = null;
             }
         }
-        
-        public function handleSignal(signalEvent: SignalEvent): void
+
+        private function onPopupShadeComplete():void
+        {
+            popupShade.visible = popupShade.alpha != 0;
+        }
+
+        public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            var payload: Object = signalEvent.payload;
-            
+            var payload:Object = signalEvent.payload;
+
             // Open a new Popup
             if (payload.hasOwnProperty("startPopup"))
                 startPopup(payload.startPopup.id, payload.startPopup.payload);
-            
+
             // Close the Popup
             if (payload.hasOwnProperty("endPopup"))
                 popup.end();
-            
+
             // Login
             if (payload.hasOwnProperty("login"))
             {
                 // Download my profile data
-                callLater(function (): void
+                callLater(function ():void
                 {
                     signalManager.dispatch({send: {request: {category: "users", id: client.id}}});
                     popup.end();
                 });
             }
-            
+
             // Logout
             if (payload.hasOwnProperty("logout"))
                 callLater(update);
         }
-        
-        public function handleData(event: Event): void
+
+        public function handleData(event:Event):void
         {
             // Data changed; Refresh
             update();
         }
-        
-        private function update(): void
+
+        private function update():void
         {
             // Update all
             updateUserBar();
         }
-        
-        private function updateUserBar(): void
+
+        private function updateUserBar():void
         {
             // Make sure the right stuff is visible
-            guestGroup.visible = guestGroup.includeInLayout = !client.isLoggedIn;
+            guestGroup.visible   = guestGroup.includeInLayout = !client.isLoggedIn;
             profileGroup.visible = profileGroup.includeInLayout = client.isLoggedIn;
-            
+
             if (client.isLoggedIn)
             {
                 // Populate player card
-                var profile: Object = dataManager.data[client.id];
+                var profile:Object = dataManager.data[client.id];
                 if (profile)
                 {
                     // Profile available
@@ -205,21 +212,21 @@
         }
         ]]>
     </fx:Script>
-    
+
     <s:VGroup width="100%"
               height="100%"
               gap="0">
-        
+
         <!--User Interface-->
         <s:HGroup width="100%"
                   gap="0">
-            
+
             <!--Navigation Bar (Top Left)-->
             <s:Panel id="navigationBar"
                      skinClass="skins.NavigationBarSkin">
-                
+
                 <s:HGroup gap="0">
-                    
+
                     <s:Spacer width="6" />
                     <s:VGroup height="5"
                               left="0"
@@ -231,67 +238,67 @@
                         <components:ActionLogoComponent id="logo"
                                                         height="60" />
                     </s:VGroup>
-                    
+
                     <s:Spacer width="20" />
-                    
+
                     <s:HGroup gap="-1">
-                        
+
                         <components:BarDividerComponent />
                         <components:BarButtonComponent id="buttonHome" />
                         <components:BarDividerComponent />
                         <components:BarButtonComboComponent id="buttonSocial" />
                         <components:BarDividerComponent />
-                        
+
                         <s:Spacer width="40" />
-                    
+
                     </s:HGroup>
-                
+
                 </s:HGroup>
-            
+
             </s:Panel>
-            
+
             <s:VGroup width="100%"
                       height="100%">
                 <s:Spacer width="100%" />
             </s:VGroup>
-            
+
             <!--User Bar (Top Right)-->
             <s:Panel id="userBar"
                      skinClass="skins.UserBarSkin">
-                
+
                 <s:Group width="100%">
-                    
+
                     <s:HGroup id="guestGroup"
                               gap="-1"
                               width="100%"
                               height="100%">
-                        
+
                         <s:Spacer width="40" />
                         <components:BarDividerComponent />
                         <components:BarButtonComponent id="buttonLogin" />
                         <components:BarDividerComponent />
                         <components:BarButtonComponent id="buttonRegister" />
-                    
+
                     </s:HGroup>
-                    
+
                     <s:HGroup id="profileGroup"
                               gap="-1"
                               width="100%"
                               height="100%">
-                        
+
                         <s:Spacer width="40" />
                         <components:BarDividerComponent />
                         <components:BarButtonComboComponent id="buttonNameCard"
                                                             items="{[{text:'Edit My Profile',target:{}},{text:'Logout',target:{logout:true}}]}" />
-                    
+
                     </s:HGroup>
-                
+
                 </s:Group>
-            
+
             </s:Panel>
-        
+
         </s:HGroup>
-        
+
         <!--Content Pane-->
         <s:HGroup width="100%"
                   height="100%"
@@ -301,36 +308,37 @@
             <panes:PaneBase width="100%"
                             height="100%" />
         </s:HGroup>
-        
+
         <s:VGroup width="100%">
-            
+
             <!--Task Bar (Bottom)-->
             <s:Panel id="taskBar"
                      width="100%"
                      skinClass="skins.TaskBarSkin">
-                
+
                 <s:HGroup gap="-1"
                           width="100%">
-                    
+
                     <s:Spacer width="100%" />
-                    
+
                     <components:BarDividerComponent />
                     <components:BarButtonComponent id="buttonSettings" />
-                
+
                 </s:HGroup>
-            
+
             </s:Panel>
-        
+
         </s:VGroup>
-    
+
     </s:VGroup>
-    
+
     <!--Popups-->
     <s:Group width="100%"
              height="100%">
         <s:Rect id="popupShade"
                 width="100%"
-                height="100%">
+                height="100%"
+                alpha="0">
             <s:fill>
                 <s:SolidColor color="0x000000"
                               alpha="0.6" />

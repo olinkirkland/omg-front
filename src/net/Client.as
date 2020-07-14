@@ -4,6 +4,8 @@ package net
     import flash.events.*;
     import flash.net.*;
 
+    import global.Util;
+
     import managers.SettingsManager;
 
     import signal.SignalEvent;
@@ -16,16 +18,16 @@ package net
 
     public class Client extends EventDispatcher
     {
-        private var socket: Socket;
-        public var connected: Boolean;
-        private var settingsManager: SettingsManager;
-        private var signalManager: SignalManager;
-        public var isLoggedIn: Boolean = false;
+        private var socket:Socket;
+        public var connected:Boolean;
+        private var settingsManager:SettingsManager;
+        private var signalManager:SignalManager;
+        public var isLoggedIn:Boolean = false;
 
         // id refers to the id of the currently logged in user
-        public var id: String = "";
+        public var id:String = "";
 
-        public function Client(): void
+        public function Client():void
         {
             connected = false;
 
@@ -37,19 +39,15 @@ package net
             settingsManager = SettingsManager.getInstance();
         }
 
-        public function handleSignal(signalEvent: SignalEvent): void
+        public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            var payload: Object = signalEvent.payload;
-
-            // Send a request
-            if (payload.hasOwnProperty("send"))
-                send(payload.send);
+            var payload:Object = signalEvent.payload;
 
             // Client action
             if (payload.hasOwnProperty("action"))
             {
-                var args: Object = payload.args;
+                var args:Object = payload.args;
                 switch (payload.action)
                 {
                     case "register":
@@ -78,23 +76,9 @@ package net
                         break;
                 }
             }
-
-            // Login
-            if (payload.hasOwnProperty("login"))
-            {
-                id = payload.id;
-                isLoggedIn = true;
-            }
-
-            // Logout
-            if (payload.hasOwnProperty("logout"))
-            {
-                id = "";
-                isLoggedIn = false;
-            }
         }
 
-        public function create(): void
+        public function create():void
         {
             // Create the socket
             socket = new Socket();
@@ -110,23 +94,24 @@ package net
             connect();
         }
 
-        public function connect(): void
+        public function connect():void
         {
             connected = false;
-            socket.connect(Service.ADDRESS.IP, Service.ADDRESS.PORT);
+            socket.connect(Util.ADDRESS.IP, Util.ADDRESS.PORT);
         }
 
-        private function handleConnect(e: Event): void
+        private function handleConnect(e:Event):void
         {
             connected = true;
-            send({initialize: true});
             dispatchEvent(new Event(Event.CONNECT));
+
+            send(new Message(ClientMessageType.CONFIRM_CONNECTION));
 
             if (settingsManager.settings.rememberLogin)
                 rawLogin(settingsManager.settings.rememberLogin.email, settingsManager.settings.rememberLogin.password);
         }
 
-        private function handleDisconnect(e: Event): void
+        private function handleDisconnect(e:Event):void
         {
             connected = false;
             dispatchEvent(new Event(Event.CLOSE));
@@ -135,92 +120,94 @@ package net
             connect();
         }
 
-        public function register(email: String, password: String, betaKey: String): void
+        public function register(email:String, password:String, betaKey:String):void
         {
             // Register
-            var salt: String = Service.hash(email, 10);
-            password = Service.hash(password + salt, 2000);
-            send({register: {email: email, password: password, betaKey: betaKey}});
+            var salt:String = Util.hash(email, 10);
+            password        = Util.hash(password + salt, 2000);
+
+            send(new Message(ClientMessageType.REGISTER, {email: email, password: password}));
         }
 
-        public function login(email: String, password: String, remember: Boolean = false): void
+        public function login(email:String, password:String, remember:Boolean = false):void
         {
             // Login
-            var salt: String = Service.hash(email, 10);
-            rawLogin(email, Service.hash(password + salt, 2000), remember);
+            var salt:String = Util.hash(email, 10);
+            rawLogin(email, Util.hash(password + salt, 2000), remember);
         }
 
-        public function rawLogin(email: String, password: String, remember: Boolean = false): void
+        public function rawLogin(email:String, password:String, remember:Boolean = false):void
         {
             // Raw login
             if (remember)
-            {
                 SettingsManager.getInstance().settings.rememberLogin = {email: email, password: password};
-            }
-            send({login: {email: email, password: password}});
+            send(new Message(ClientMessageType.LOGIN, {email: email, password: password}));
         }
 
-        public function resendVerifyCode(email: String): void
+        public function resendVerifyCode(email:String):void
         {
             // Verify resend
-            send({resendVerifyCode: {email: email}});
+            send(new Message(ClientMessageType.RESEND_VERIFY_CODE, {email: email}));
         }
 
-        public function submitVerifyCode(email: String, verifyCode: String): void
+        public function submitVerifyCode(email:String, verifyCode:String):void
         {
             // Verify
-            send({submitVerifyCode: {email: email, verifyCode: verifyCode}});
+            send(new Message(ClientMessageType.SUBMIT_VERIFY_CODE, {email: email, verifyCode: verifyCode}));
         }
 
-        public function chooseName(name: String): void
+        public function chooseName(name:String):void
         {
             // Choose name
-            send({chooseName: {name: name}});
+            send(new Message(ClientMessageType.CHOOSE_NAME, {name: name}));
         }
 
-        public function resetPassword(email: String): void
-        {
-            // Reset
-            send({resetPassword: {email: email}});
-        }
-
-        public function logout(): void
+        public function logout():void
         {
             // Logout
-            var config: SharedObject = SharedObject.getLocal("omgforever-payload");
+            var config:SharedObject   = SharedObject.getLocal("omgforever-payload");
             config.data.rememberLogin = null;
             config.flush();
 
-            send({logout: true});
+            send(new Message(ClientMessageType.LOGOUT));
         }
 
-        public function handleError(e: Event): void
+        public function handleError(e:Event):void
         {
             // Couldn't connect to server, retrying
             connect();
         }
 
-        private function socketDataHandler(e: ProgressEvent): void
+        private function socketDataHandler(e:ProgressEvent):void
         {
             try
             {
-                var data: Object = socket.readObject();
-                trace("[receive] " + JSON.stringify(data));
+                var data:Object = socket.readObject();
+
+                trace("[received] " + JSON.stringify(data));
                 signalManager.dispatch(data);
                 dispatchEvent(new MessageEvent(data));
-            }
-            catch (error: Error)
+            } catch (error:Error)
             {
                 // Not an object
                 // Ignore it
             }
         }
 
-        public function send(data: Object): void
+
+        public function send(m:Message):void
         {
-            trace("[send] " + JSON.stringify(data));
-            socket.writeObject(data);
-            socket.flush();
+            try
+            {
+                // Try to send an object to the socket
+                trace("[send] " + JSON.stringify(m));
+                socket.writeObject(m);
+                socket.flush();
+            } catch (error:Error)
+            {
+                // There's no connection, or there was a problem with the connection
+                trace("An error was encountered when trying to send the message\n" + JSON.stringify(m));
+            }
         }
     }
 }

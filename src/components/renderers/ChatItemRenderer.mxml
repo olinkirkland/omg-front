@@ -13,10 +13,12 @@
         import flashx.textLayout.events.StatusChangeEvent;
         import flashx.textLayout.formats.TextLayoutFormat;
 
+        import global.Util;
+
         import mx.events.FlexEvent;
         import mx.utils.ObjectUtil;
 
-        override public function set data(value: Object): void
+        override public function set data(value:Object):void
         {
             super.data = ObjectUtil.clone(value);
 
@@ -26,42 +28,41 @@
             }
         }
 
-        private function onCreationComplete(event: FlexEvent): void
+        private function onCreationComplete(event:FlexEvent):void
         {
             update();
         }
 
-        private function update(): void
+        private function update():void
         {
-            richText.text = "";
+            richText.text                 = "";
             richTextGroup.horizontalAlign = (data.sender == "me") ? "right" : "left";
-            bubbleRect.fill["color"] = (data.sender == "me") ? 0x007aff : 0xf5f5f5;
+            bubbleRect.fill["color"]      = (data.sender == "me") ? 0x007aff : 0xf5f5f5;
 
             // Break down the message
-            var messageArray: Array = data.message ? data.message.split(/(<emote>\w+<\/emote>)/) : [];
+            var messageArray:Array = data.message ? data.message.split(/(<emote>\w+<\/emote>)/) : [];
 
             // Set up the textArea
-            var format: TextLayoutFormat = new TextLayoutFormat();
-            format.fontSize = 16;
-            format.color = (data.sender == "me") ? 0xffffff : 0x000000;
+            var format:TextLayoutFormat  = new TextLayoutFormat();
+            format.fontSize              = 16;
+            format.color                 = (data.sender == "me") ? 0xffffff : 0x000000;
             richText.textFlow.hostFormat = format;
 
             richText.textFlow.interactionManager.selectLastPosition();
 
             // Fill the textArea
-            for each (var seg: String in messageArray)
+            for each (var seg:String in messageArray)
             {
                 if (seg.match(/(<emote>\w+<\/emote>)/))
                 {
                     // Emote
                     richText.editable = true;
-                    var size: int = int(richText.textFlow.hostFormat.fontSize * 1);
-                    IEditManager(richText.textFlow.interactionManager).insertInlineGraphic(Service.getImage("EMOTE_" + /<emote>(\w+)<\/emote>/.exec(seg)[1].toUpperCase(), size, size),
+                    var size:int      = int(richText.textFlow.hostFormat.fontSize * 1);
+                    IEditManager(richText.textFlow.interactionManager).insertInlineGraphic(Util.getImage("EMOTE_" + /<emote>(\w+)<\/emote>/.exec(seg)[1].toUpperCase(), size, size),
                             size,
                             size);
                     richText.editable = false;
-                }
-                else
+                } else
                 {
                     // Text
                     richText.editable = true;
@@ -71,7 +72,7 @@
             }
 
             richText.textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE,
-                    function (e: StatusChangeEvent): void
+                    function (e:StatusChangeEvent):void
                     {
                         IEditManager(richText.textFlow.interactionManager).updateAllControllers();
                     });

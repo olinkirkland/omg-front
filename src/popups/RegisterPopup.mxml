@@ -4,130 +4,117 @@
                   xmlns:components="components.*"
                   creationComplete="onCreationComplete(event)"
                   xmlns:popups="popups.*">
-    
+
     <fx:Script>
         <![CDATA[
+        import global.Color;
+
         import managers.LanguageManager;
-    
+
         import mx.events.FlexEvent;
-        import mx.utils.UIDUtil;
-    
-        private var valid: Boolean;
-    
-        private function onCreationComplete(event: FlexEvent): void
+
+        import signal.SignalType;
+
+        private var valid:Boolean;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
-            labelRegister.text = LanguageManager.getText("labelRegister");
-        
-            inputEmail.preview = LanguageManager.getText("inputEmailPreview");
-            inputPassword.preview = LanguageManager.getText("inputPasswordPreview");
-            inputConfirmPassword.preview = LanguageManager.getText("inputConfirmPasswordPreview");
-            inputBetaKey.preview = LanguageManager.getText("inputBetaKeyPreview");
-            buttonRegister.text = LanguageManager.getText("buttonRegister");
-            labelConfirmPassword.text = LanguageManager.getText("labelConfirmPassword")
-        
-            labelSwitchToLogin.text = LanguageManager.getText("labelSwitchToLogin");
-            buttonSwitchToLogin.text = LanguageManager.getText("buttonSwitchToLogin");
-        
+            setTimeout(function ():void
+            {
+                inputEmail.setFocus();
+            }, 250);
+
             // Add Listeners
             buttonSwitchToLogin.addEventListener(MouseEvent.CLICK, onButtonSwitchToLogin);
             closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
             buttonRegister.addEventListener(MouseEvent.CLICK, onButtonRegister);
-        
+
             inputEmail.addEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputEmail.addEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
             inputPassword.addEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputPassword.addEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
             inputConfirmPassword.addEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputConfirmPassword.addEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
-            inputBetaKey.addEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
-            inputBetaKey.addEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
-        
+
             updateRegisterButton(null);
         }
-    
-        override public function dispose(): void
+
+        override public function dispose():void
         {
             super.dispose();
-        
+
             // Remove listeners
             buttonSwitchToLogin.removeEventListener(MouseEvent.CLICK, onButtonSwitchToLogin);
             closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
             buttonRegister.removeEventListener(MouseEvent.CLICK, onButtonRegister);
-        
+
             inputEmail.removeEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputEmail.removeEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
             inputPassword.removeEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputPassword.removeEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
             inputConfirmPassword.removeEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
             inputConfirmPassword.removeEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
-            inputBetaKey.removeEventListener(KeyboardEvent.KEY_DOWN, updateRegisterButton);
-            inputBetaKey.removeEventListener(KeyboardEvent.KEY_UP, updateRegisterButton);
         }
-    
-        private function onButtonClose(event: MouseEvent): void
+
+        private function onButtonClose(event:MouseEvent):void
         {
             end();
         }
-    
-        private function onButtonSwitchToLogin(event: MouseEvent): void
+
+        private function onButtonSwitchToLogin(event:MouseEvent):void
         {
             signalManager.dispatch({startPopup: {id: PopupTypes.LOGIN}});
             end();
         }
-    
-        private function updateRegisterButton(event: Event): void
+
+        private function updateRegisterButton(event:Event):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
                 valid = true;
-            
+
                 if (inputEmail.text.length == 0)
                     valid = false;
-            
+
                 if (inputPassword.text.length == 0)
                     valid = false;
-            
+
                 if (inputConfirmPassword.text.length == 0)
                     valid = false;
-            
-                if (inputBetaKey.text.length == 0)
-                    valid = false;
-            
+
                 if (inputPassword.text != inputConfirmPassword.text)
                 {
-                    valid = false;
-                    labelConfirmPassword.visible = true;
-                    labelConfirmPassword.includeInLayout = true;
-                }
-                else
+                    valid                                     = false;
+                    labelConfirmPasswordError.visible         = true;
+                    labelConfirmPasswordError.includeInLayout = true;
+                } else
                 {
-                    labelConfirmPassword.visible = false;
-                    labelConfirmPassword.includeInLayout = false;
+                    labelConfirmPasswordError.visible         = false;
+                    labelConfirmPasswordError.includeInLayout = false;
                 }
-            
-                buttonRegister.style = valid ? "action" : "disabled";
+
+                buttonRegister.enabled = valid;
             });
         }
-    
-        private function onButtonRegister(event: MouseEvent): void
+
+        private function onButtonRegister(event:MouseEvent):void
         {
             signalManager.dispatch({
-                action: "register",
+                action: SignalType.REGISTER,
                 args:   {
                     email:    inputEmail.text,
-                    password: inputPassword.text,
-                    betaKey:  inputBetaKey.text
+                    password: inputPassword.text
                 }
             });
-        
-            buttonRegister.style = "disabled";
+
+            buttonRegister.enabled = false;
         }
         ]]>
     </fx:Script>
-    
+
     <s:Panel skinClass="skins.PanelSkin"
              width="550">
-        
+
         <components:ActionLogoComponent id="logo"
                                         left="-20"
                                         top="-25" />
@@ -137,71 +124,88 @@
                 <components:CloseButtonComponent id="closeButton" />
             </s:VGroup>
         </s:HGroup>
-        
+
         <s:BitmapImage id="bitmapImage"
                        smooth="true"
                        smoothingQuality="high" />
-        
+
         <s:VGroup id="content"
                   width="100%"
                   horizontalAlign="left">
             <s:Spacer height="60" />
-            
+
             <s:Label id="labelRegister"
+                     text="{LanguageManager.getText('labelRegister')}"
                      width="100%"
                      color="0x808080"
                      paddingLeft="20"
                      paddingRight="20" />
-            
+
             <s:Spacer height="20" />
-            
+
             <s:VGroup width="100%"
                       height="100%"
                       verticalAlign="middle"
                       horizontalAlign="center">
-                
-                <components:InputComponent id="inputEmail"
-                                           width="350" />
-                <components:InputComponent id="inputPassword"
-                                           width="350"
-                                           password="true" />
-                <components:InputComponent id="inputConfirmPassword"
-                                           width="350"
-                                           password="true" />
-                <s:Label id="labelConfirmPassword"
-                         width="350"
-                         color="0xeb5160" />
-                <components:InputComponent id="inputBetaKey"
-                                           width="350" />
+
+                <s:VGroup width="350">
+
+                    <s:Label width="100%"
+                             text="{LanguageManager.getText('labelEmail')}" />
+                    <s:TextInput id="inputEmail"
+                                 width="100%" />
+
+                    <s:Label width="100%"
+                             text="{LanguageManager.getText('labelPassword')}" />
+                    <s:TextInput id="inputPassword"
+                                 width="100%"
+                                 displayAsPassword="true" />
+
+                    <s:Label width="100%"
+                             text="{LanguageManager.getText('labelConfirmPassword')}" />
+                    <s:TextInput id="inputConfirmPassword"
+                                 width="100%"
+                                 displayAsPassword="true" />
+
+                    <s:Label id="labelConfirmPasswordError"
+                             text="{LanguageManager.getText('labelConfirmPasswordError')}"
+                             color="{Color.red}" />
+
+                    <s:HGroup width="100%"
+                              horizontalAlign="right">
+
+                        <s:Button id="buttonRegister"
+                                  label="{LanguageManager.getText('buttonRegister').toUpperCase()}"
+                                  skinClass="skins.buttons.PrimaryButtonSkin" />
+                    </s:HGroup>
+                </s:VGroup>
                 <s:Spacer height="5" />
-                <components:ButtonComponent id="buttonRegister"
-                                            width="350"
-                                            style="action" />
-                <s:Spacer height="5" />
-            
+
             </s:VGroup>
-            
+
             <s:Panel width="100%"
                      height="60"
                      skinClass="skins.NestedPanelSkin">
-                
+
                 <s:HGroup width="100%"
                           height="100%"
                           verticalAlign="middle"
                           verticalCenter="0"
                           padding="15">
-                    
+
                     <s:Spacer width="100%" />
-                    <s:Label id="labelSwitchToLogin" />
-                    <components:ButtonComponent id="buttonSwitchToLogin"
-                                                style="normal" />
-                
+
+                    <s:Label id="labelSwitchToLogin"
+                             text="{LanguageManager.getText('labelSwitchToLogin')}" />
+                    <s:Button id="buttonSwitchToLogin"
+                              label="{LanguageManager.getText('buttonSwitchToLogin').toUpperCase()}" />
+
                 </s:HGroup>
-            
+
             </s:Panel>
-        
+
         </s:VGroup>
-    
+
     </s:Panel>
 
 </popups:BasePopup>

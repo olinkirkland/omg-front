@@ -4,44 +4,37 @@
                   xmlns:components="components.*"
                   xmlns:popups="popups.*"
                   creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
         import managers.LanguageManager;
-    
+
         import mx.events.FlexEvent;
-    
-        private function onCreationComplete(event: FlexEvent): void
+
+        private function onCreationComplete(event:FlexEvent):void
         {
-            // Text
-            inputEmail.preview = LanguageManager.getText("inputEmailPreview");
-            inputPassword.preview = LanguageManager.getText("inputPasswordPreview");
-            inputPassword.password = true;
-            buttonLogin.text = LanguageManager.getText("buttonLogin");
-        
-            labelRememberPassword.text = LanguageManager.getText("labelRememberPassword");
-        
-            buttonForgotPassword.text = LanguageManager.getText("buttonForgotPassword");
-            labelSwitchToRegister.text = LanguageManager.getText("labelSwitchToRegister");
-            buttonSwitchToRegister.text = LanguageManager.getText("buttonSwitchToRegister");
-        
+            setTimeout(function ():void
+            {
+                inputEmail.setFocus();
+            }, 250);
+
             // Add Listeners
             buttonLogin.addEventListener(MouseEvent.CLICK, onButtonLogin);
             buttonForgotPassword.addEventListener(MouseEvent.CLICK, onForgotPassword);
             buttonSwitchToRegister.addEventListener(MouseEvent.CLICK, onButtonSwitchToRegister);
             closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
         }
-    
-        override public function dispose(): void
+
+        override public function dispose():void
         {
             super.dispose();
-        
+
             // Remove listeners
             closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
             buttonSwitchToRegister.removeEventListener(MouseEvent.CLICK, onButtonSwitchToRegister);
         }
-    
-        private function onButtonLogin(event: MouseEvent): void
+
+        private function onButtonLogin(event:MouseEvent):void
         {
             signalManager.dispatch({
                 action: "login",
@@ -50,33 +43,33 @@
                     password: inputPassword.text,
                     remember: checkRememberPassword.selected
                 }
-        
+
             });
-        
-            buttonLogin.style = "disabled";
+
+            buttonLogin.enabled = false;
         }
-    
-        private function onForgotPassword(event: MouseEvent): void
+
+        private function onForgotPassword(event:MouseEvent):void
         {
             // todo open reset password popup
         }
-    
-        private function onButtonClose(event: MouseEvent): void
+
+        private function onButtonClose(event:MouseEvent):void
         {
             end();
         }
-    
-        private function onButtonSwitchToRegister(event: MouseEvent): void
+
+        private function onButtonSwitchToRegister(event:MouseEvent):void
         {
             signalManager.dispatch({startPopup: {id: PopupTypes.REGISTER}});
             end();
         }
         ]]>
     </fx:Script>
-    
+
     <s:Panel skinClass="skins.PanelSkin"
              width="550">
-        
+
         <components:ActionLogoComponent id="logo"
                                         left="-20"
                                         top="-25" />
@@ -86,57 +79,73 @@
                 <components:CloseButtonComponent id="closeButton" />
             </s:VGroup>
         </s:HGroup>
-        
+
         <s:BitmapImage id="bitmapImage"
                        smooth="true"
                        smoothingQuality="high" />
-        
+
         <s:VGroup id="content"
                   width="100%"
                   horizontalAlign="center">
-            
+
             <s:Spacer height="60" />
-            <components:InputComponent id="inputEmail"
-                                       width="350" />
-            <components:InputComponent id="inputPassword"
-                                       width="350" />
-            <s:HGroup width="350"
-                      horizontalAlign="left"
-                      verticalAlign="middle">
-                <components:CheckboxComponent id="checkRememberPassword" />
-                <s:Label id="labelRememberPassword" />
-            </s:HGroup>
+
+            <s:VGroup width="350">
+
+                <s:Label width="100%"
+                         text="{LanguageManager.getText('labelEmail')}" />
+                <s:TextInput id="inputEmail"
+                             width="100%" />
+
+                <s:Label width="100%"
+                         text="{LanguageManager.getText('labelPassword')}" />
+                <s:TextInput id="inputPassword"
+                             displayAsPassword="true"
+                             width="100%" />
+
+                <s:HGroup width="100%"
+                          horizontalAlign="left"
+                          verticalAlign="middle">
+                    <components:CheckboxComponent id="checkRememberPassword" />
+                    <s:Label id="labelRememberPassword"
+                             text="{LanguageManager.getText('labelRememberPassword')}" />
+                    <s:Spacer width="100%" />
+                    <s:Button id="buttonLogin"
+                              width="100%"
+                              label="{LanguageManager.getText('buttonLogin').toUpperCase()}"
+                              skinClass="skins.buttons.PrimaryButtonSkin" />
+                </s:HGroup>
+
+                <s:Spacer height="5" />
+
+            </s:VGroup>
+
             <s:Spacer height="5" />
-            
-            <components:ButtonComponent id="buttonLogin"
-                                        width="350"
-                                        style="action" />
-            
-            <s:Spacer height="5" />
-            
+
             <s:Panel width="100%"
                      height="60"
                      skinClass="skins.NestedPanelSkin">
-                
+
                 <s:HGroup width="100%"
                           height="100%"
                           verticalAlign="middle"
                           verticalCenter="0"
                           padding="15">
-                    
-                    <components:ButtonComponent id="buttonForgotPassword"
-                                                style="normal" />
+
+                    <s:Button id="buttonForgotPassword"
+                              label="{LanguageManager.getText('buttonForgotPassword').toUpperCase()}" />
                     <s:Spacer width="100%" />
-                    <s:Label id="labelSwitchToRegister" />
-                    <components:ButtonComponent id="buttonSwitchToRegister"
-                                                style="normal" />
-                
+                    <s:Label id="labelSwitchToRegister"
+                             text="{LanguageManager.getText('labelSwitchToRegister')}" />
+                    <s:Button id="buttonSwitchToRegister"
+                              label="{LanguageManager.getText('buttonSwitchToRegister').toUpperCase()}" />
+
                 </s:HGroup>
-            
+
             </s:Panel>
-        
+
         </s:VGroup>
-    
+
     </s:Panel>
 
 </popups:BasePopup>

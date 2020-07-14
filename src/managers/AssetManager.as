@@ -8,6 +8,8 @@ package managers {
     import flash.events.Event;
     import flash.events.EventDispatcher;
 
+    import global.Util;
+
     public final class AssetManager extends EventDispatcher {
         [Embed(source="/assets/icons/settings.png")]
         public static const ICON_SETTINGS:Class;
@@ -42,8 +44,8 @@ package managers {
 
         public function load():void {
             // Populate the ITEMS object
-            Service.ITEMS = {};
-            var items:Object = JSON.parse(new Service.ITEMS_JSON());
+            Util.ITEMS           = {};
+            var items:Object     = JSON.parse(new Util.ITEMS_JSON());
             var assetQueue:Array = [];
 
             for (var key:String in items) {
@@ -51,7 +53,7 @@ package managers {
                 item.fromObject(items[key]);
                 item.id = key;
 
-                Service.ITEMS[key] = item;
+                Util.ITEMS[key] = item;
 
                 if (item.asset)
                     assetQueue.push(item);
@@ -67,7 +69,7 @@ package managers {
             bulkLoader.addEventListener(BulkLoader.COMPLETE, onLoadComplete);
 
             for each (var assetItem:Object in assetQueue)
-                bulkLoader.add(Service.formatAssetURL(assetItem.asset.url) + "?" + Service.VERSION, {id: assetItem.id});
+                bulkLoader.add(Util.formatAssetURL(assetItem.asset.url) + "?" + Util.VERSION, {id: assetItem.id});
 
             bulkLoader.start();
         }

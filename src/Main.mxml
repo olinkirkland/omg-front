@@ -3,7 +3,6 @@
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:components="components.*"
                creationComplete="onCreationComplete(event)"
-               addedToStage="onAddedToStage(event)"
                backgroundColor="0x323232"
                frameRate="60">
 
@@ -20,27 +19,28 @@
         import mx.events.FlexEvent;
 
         import signal.SignalEvent;
-
         import signal.SignalManager;
 
         private var assetManager:AssetManager;
         private var signalManager:SignalManager;
-        private var stageQuality:String;
 
         private function onCreationComplete(event:FlexEvent):void
         {
+            // Set up SignalManager
             signalManager = SignalManager.getInstance();
             signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
 
+            // Preload everything
             browserContainer.alpha = 0;
             progressBar.moveTo(0);
 
-            // Preload everything
             assetManager = AssetManager.getInstance();
             assetManager.addEventListener(BulkProgressEvent.PROGRESS, onLoadProgress);
             assetManager.addEventListener(BulkProgressEvent.COMPLETE, onLoadComplete);
             assetManager.load();
             preloaderItemsLabel.text = "Loading assets ...";
+
+            tabChildren = false;
         }
 
         private function handleSignal(signalEvent:SignalEvent):void
