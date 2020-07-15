@@ -15,7 +15,7 @@
           <sdk name="ApacheAirMerged" />
         </dependencies>
         <compiler-options>
-          <option name="additionalOptions" value="-default-size=1000,800" />
+          <option name="additionalOptions" value="-default-size 1000 800" />
         </compiler-options>
         <packaging-air-desktop />
         <packaging-android />

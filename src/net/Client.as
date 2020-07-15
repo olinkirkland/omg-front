@@ -185,6 +185,10 @@ package net
                 var data:Object = socket.readObject();
 
                 trace("[received] " + JSON.stringify(data));
+
+                // Todo this
+
+
                 signalManager.dispatch(data);
                 dispatchEvent(new MessageEvent(data));
             } catch (error:Error)

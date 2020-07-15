@@ -7,14 +7,14 @@ Fonts
  */
 
 @font-face {
-    src: url("/assets/fonts/AvenirNextLTPro-Regular.otf");
+    src: url("/assets/fonts/Avenir-Regular.otf");
     fontFamily: AvenirEmbedded;
     fontWeight: normal;
     fontStyle: normal;
 }
 
 @font-face {
-    src: url("/assets/fonts/AvenirNextLTPro-Bold.otf");
+    src: url("/assets/fonts/Avenir-Bold.otf");
     fontFamily: AvenirEmbedded;
     fontWeight: bold;
     fontStyle: normal;
