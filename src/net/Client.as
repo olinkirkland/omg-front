@@ -57,6 +57,15 @@ package net
                 case ClientMessageType.LOGIN:
                     login(payload.email, payload.password, payload.remember);
                     break;
+                case ServerMessageType.LOGIN_SUCCESS:
+                    isLoggedIn = true;
+                    break;
+                case ServerMessageType.LOGIN_FAIL:
+                    // Erase the rememberLogin
+                    var config:SharedObject   = SharedObject.getLocal("omgforever-data");
+                    config.data.rememberLogin = null;
+                    config.flush();
+                    break;
                 case SignalType.RAW_LOGIN:
                     rawLogin(payload.email, payload.password);
                     break;
@@ -68,6 +77,9 @@ package net
                     break;
                 case ClientMessageType.CHOOSE_NAME:
                     chooseName(payload as String);
+                    break;
+                case ServerMessageType.CHOOSE_NAME_SUCCESS:
+                    isLoggedIn = true;
                     break;
                 case ClientMessageType.LOGOUT:
                     logout();

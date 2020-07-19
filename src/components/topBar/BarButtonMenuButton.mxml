@@ -41,8 +41,7 @@
 
         private function onClick(event:MouseEvent):void
         {
-            trace(target);
-            //signalManager.dispatch(target);
+            signalManager.dispatch(target.action, target.data);
         }
 
         public function set text(str:String):void
@@ -53,7 +52,7 @@
 	</fx:Script>
     <s:VGroup padding="5">
         <s:Label id="label"
-                 fontSize="10"
+                 fontSize="12"
                  fontWeight="normal"
                  color="0xffffff"
                  alpha=".8" />

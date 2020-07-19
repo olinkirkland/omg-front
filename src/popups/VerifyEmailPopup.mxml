@@ -32,7 +32,7 @@
             setTimeout(function ():void
             {
                 inputVerifyCode.setFocus();
-            }, 250);
+            }, 200);
 
             // Add Listeners
             buttonResendVerifyCode.addEventListener(MouseEvent.CLICK, onResendVerifyCode);

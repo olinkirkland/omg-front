@@ -8,7 +8,7 @@
 
     <fx:Script>
     <![CDATA[
-        import components.DynamicPanImageButtonComponent;
+        import components.DynamicPanImageButton;
 
         import global.Util;
 
@@ -36,8 +36,8 @@
             payload = JSON.parse(event.target.data);
 
             // Set spotlight
-            var spotlight:DynamicPanImageButtonComponent = new DynamicPanImageButtonComponent();
-            spotlight.source                             = Util.local(Util.formatAssetURL(payload.spotlight.image));
+            var spotlight:DynamicPanImageButton = new DynamicPanImageButton();
+            spotlight.source                    = Util.local(Util.formatAssetURL(payload.spotlight.image));
             trace(spotlight.source);
             spotlight.color      = payload.spotlight.imageColor;
             spotlight.buttonText = payload.spotlight.buttonText;
@@ -49,8 +49,8 @@
             features = [];
             for each (var featureObject:Object in payload.features)
             {
-                var feature:DynamicPanImageButtonComponent = new DynamicPanImageButtonComponent();
-                feature.source                             = Util.local(Util.formatAssetURL(featureObject.image));
+                var feature:DynamicPanImageButton = new DynamicPanImageButton();
+                feature.source                    = Util.local(Util.formatAssetURL(featureObject.image));
                 trace(feature.source);
                 feature.color      = featureObject.imageColor;
                 feature.buttonText = featureObject.buttonText;

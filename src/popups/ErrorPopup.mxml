@@ -7,6 +7,8 @@
 
     <fx:Script>
         <![CDATA[
+        import global.Color;
+
         import managers.LanguageManager;
 
         import mx.events.FlexEvent;
@@ -49,7 +51,7 @@
                   width="100%"
                   height="100%"
                   gap="0">
-            <s:Panel skinClass="skins.NestedPanelSkin"
+            <s:Panel skinClass="skins.NestedPanelSkinAlert"
                      width="100%">
                 <s:HGroup width="100%"
                           gap="10"
@@ -58,10 +60,11 @@
                               padding="10">
                         <s:Label id="titleLabel"
                                  fontSize="20"
+                                 color="{Color.white}"
                                  fontWeight="bold"
                                  width="100%" />
                     </s:HGroup>
-                    <components:CloseButtonComponent id="closeButton" />
+                    <components:CloseButton id="closeButton" />
                 </s:HGroup>
             </s:Panel>
             <s:HGroup width="100%"

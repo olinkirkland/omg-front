@@ -7,7 +7,7 @@
 
     <fx:Script>
         <![CDATA[
-        import components.IndefiniteLoadingAnimationComponent;
+        import components.IndefiniteLoadingAnimation;
 
         import global.Util;
 
@@ -16,7 +16,7 @@
 
         import signal.SignalEvent;
 
-        private var loadingAnimation:IndefiniteLoadingAnimationComponent;
+        private var loadingAnimation:IndefiniteLoadingAnimation;
         private var dataProvider:ArrayCollection;
 
         private function onCreationComplete(event:FlexEvent):void
@@ -27,7 +27,7 @@
             //signalManager.dispatch({send: {request: {category: "paper", id: data}}});
 
             // Show loading
-            loadingAnimation = new IndefiniteLoadingAnimationComponent();
+            loadingAnimation = new IndefiniteLoadingAnimation();
             loadingAnimationContainer.addElement(loadingAnimation);
 
             // Add Listeners
@@ -42,14 +42,14 @@
             closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
         }
 
-//        override public function handleSignal(signalEvent:SignalEvent):void
-//        {
-//            // Handle global Signals
-//
-//            // Returned Request
-//            if (signalEvent.payload.hasOwnProperty("requestReturn") && signalEvent.payload.requestReturn.category == "paper")
-//                downloadContent(signalEvent.payload.requestReturn);
-//        }
+        //        override public function handleSignal(signalEvent:SignalEvent):void
+        //        {
+        //            // Handle global Signals
+        //
+        //            // Returned Request
+        //            if (signalEvent.payload.hasOwnProperty("requestReturn") && signalEvent.payload.requestReturn.category == "paper")
+        //                downloadContent(signalEvent.payload.requestReturn);
+        //        }
 
         public function downloadContent(requestReturn:Object):void
         {
@@ -127,7 +127,7 @@
                                  fontWeight="bold"
                                  width="100%" />
                     </s:HGroup>
-                    <components:CloseButtonComponent id="closeButton" />
+                    <components:CloseButton id="closeButton" />
                 </s:HGroup>
             </s:Panel>
             <s:VGroup width="100%"

@@ -30,7 +30,7 @@
             setTimeout(function ():void
             {
                 inputEmail.setFocus();
-            }, 250);
+            }, 200);
 
             // Add Listeners
             buttonLogin.addEventListener(MouseEvent.CLICK, onButtonLogin);
@@ -121,7 +121,7 @@
         <s:HGroup width="100%">
             <s:Spacer width="100%" />
             <s:VGroup padding="5">
-                <components:CloseButtonComponent id="closeButton" />
+                <components:CloseButton id="closeButton" />
             </s:VGroup>
         </s:HGroup>
 
@@ -168,7 +168,7 @@
                 <s:HGroup width="100%"
                           horizontalAlign="left"
                           verticalAlign="middle">
-                    <components:CheckboxComponent id="checkRememberPassword" />
+                    <components:Checkbox id="checkRememberPassword" />
                     <s:Label id="labelRememberPassword"
                              text="{LanguageManager.getText('labelRememberPassword')}" />
 

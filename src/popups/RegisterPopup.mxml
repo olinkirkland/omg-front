@@ -29,7 +29,7 @@
             setTimeout(function ():void
             {
                 inputEmail.setFocus();
-            }, 250);
+            }, 200);
 
             // Add Listeners
             buttonSwitchToLogin.addEventListener(MouseEvent.CLICK, onButtonSwitchToLogin);
@@ -148,7 +148,7 @@
         <s:HGroup width="100%">
             <s:Spacer width="100%" />
             <s:VGroup padding="5">
-                <components:CloseButtonComponent id="closeButton" />
+                <components:CloseButton id="closeButton" />
             </s:VGroup>
         </s:HGroup>
 

@@ -4,47 +4,46 @@
          creationComplete="onComplete(event)">
     <fx:Script><![CDATA[
         import mx.events.FlexEvent;
-        
-        public var items: Array;
-        
-        private function onComplete(event: FlexEvent): void
+
+        public var items:Array;
+
+        private function onComplete(event:FlexEvent):void
         {
             if (items && items.length > 0)
             {
-                for each (var item: Object in items)
+                for each (var item:Object in items)
                 {
-                    var button: BarButtonMenuButtonComponent = new BarButtonMenuButtonComponent();
-                    button.text = item.text;
-                    button.target = item.target;
+                    var button:BarButtonMenuButton = new BarButtonMenuButton();
+                    button.text                    = item.text;
+                    button.target                  = item.target;
                     contentGroup.addElement(button);
                 }
-            }
-            else
+            } else
             {
                 enabled = false;
                 hide();
             }
         }
-        
-        public function show(): void
+
+        public function show():void
         {
             if (enabled)
             {
-                visible = true;
+                visible       = true;
                 mouseChildren = true;
-                mouseEnabled = true;
+                mouseEnabled  = true;
             }
         }
-        
-        public function hide(): void
+
+        public function hide():void
         {
-            visible = false;
+            visible       = false;
             mouseChildren = false;
-            mouseEnabled = false;
+            mouseEnabled  = false;
         }
         ]]>
 	</fx:Script>
-    
+
     <s:Group>
         <s:Rect width="100%"
                 height="100%"

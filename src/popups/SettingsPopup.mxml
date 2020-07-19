@@ -83,7 +83,7 @@
                                  fontWeight="bold"
                                  width="100%" />
                     </s:HGroup>
-                    <components:CloseButtonComponent id="closeButton" />
+                    <components:CloseButton id="closeButton" />
                 </s:HGroup>
             </s:Panel>
             <s:VGroup width="100%"
@@ -96,7 +96,7 @@
                               padding="4"
                               gap="12"
                               verticalAlign="middle">
-                        <components:CheckboxComponent id="highQualityCheckbox" />
+                        <components:Checkbox id="highQualityCheckbox" />
                         <s:VGroup width="100%">
                             <s:Label id="highQualityLabel"
                                      text="{LanguageManager.getText('labelHighQuality')}"
@@ -111,7 +111,7 @@
                               padding="4"
                               gap="12"
                               verticalAlign="middle">
-                        <components:CheckboxComponent id="highResolutionWallpapersCheckbox" />
+                        <components:Checkbox id="highResolutionWallpapersCheckbox" />
                         <s:VGroup width="100%">
                             <s:Label id="highResolutionWallpapersLabel"
                                      text="{LanguageManager.getText('labelHighResolutionWallpapers')}"

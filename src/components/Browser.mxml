@@ -2,6 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:components="components.*"
          xmlns:panes="panes.*"
+         xmlns:top="components.topBar.*"
          creationComplete="onCreationComplete(event)"
          xmlns:s="library://ns.adobe.com/flex/spark">
 
@@ -13,6 +14,7 @@
         import managers.LanguageManager;
 
         import net.Client;
+        import net.ClientMessageType;
         import net.ClientMessageType;
         import net.ServerMessageType;
 
@@ -40,6 +42,16 @@
 
         private function onCreationComplete(event:FlexEvent):void
         {
+            buttonNameCard.items = [
+                {
+                    text:   LanguageManager.getText('labelProfile'),
+                    target: {}
+                },
+                {
+                    text:   LanguageManager.getText('labelLogout'),
+                    target: {action: ClientMessageType.LOGOUT}
+                }
+            ];
         }
 
         public function start():void
@@ -169,19 +181,27 @@
                     startPopup(payload.id, payload.payload);
                     break;
                 case SignalType.END_POPUP:
-                    popup.end();
-                    break;
-                case ServerMessageType.REGISTER_SUCCESS:
-                    popup.end();
+                    if (popup)
+                        popup.end();
                     break;
                 case ServerMessageType.LOGIN_SUCCESS:
-                    popup.end();
+                    if (popup)
+                        popup.end();
+                    callLater(update);
+                    break;
+                case ServerMessageType.LOGOUT_FAIL:
+                    startPopup(PopupType.ERROR, "labelLogoutFail");
                     break;
                 case ServerMessageType.USER_NOT_VERIFIED:
                     startPopup(PopupType.VERIFY_EMAIL, payload as String);
                     break;
                 case ServerMessageType.USER_NOT_NAMED:
                     startPopup(PopupType.CHOOSE_NAME);
+                    break;
+                case ServerMessageType.CHOOSE_NAME_SUCCESS:
+                    if (popup)
+                        popup.end();
+                    callLater(update);
                     break;
                 case ClientMessageType.LOGOUT:
                     callLater(update);
@@ -251,11 +271,11 @@
 
                     <s:HGroup gap="-1">
 
-                        <components:BarDividerComponent />
-                        <components:BarButtonComponent id="buttonHome" />
-                        <components:BarDividerComponent />
-                        <components:BarButtonComboComponent id="buttonSocial" />
-                        <components:BarDividerComponent />
+                        <components:BarDivider />
+                        <top:BarButton id="buttonHome" />
+                        <components:BarDivider />
+                        <top:BarButtonCombo id="buttonSocial" />
+                        <components:BarDivider />
 
                         <s:Spacer width="40" />
 
@@ -282,10 +302,10 @@
                               height="100%">
 
                         <s:Spacer width="40" />
-                        <components:BarDividerComponent />
-                        <components:BarButtonComponent id="buttonLogin" />
-                        <components:BarDividerComponent />
-                        <components:BarButtonComponent id="buttonRegister" />
+                        <components:BarDivider />
+                        <top:BarButton id="buttonLogin" />
+                        <components:BarDivider />
+                        <top:BarButton id="buttonRegister" />
 
                     </s:HGroup>
 
@@ -295,10 +315,8 @@
                               height="100%">
 
                         <s:Spacer width="40" />
-                        <components:BarDividerComponent />
-                        <components:BarButtonComboComponent id="buttonNameCard"
-                                                            items="{[{text:'Edit My Profile',target:{}},{text:'Logout',target:{logout:true}}]}" />
-
+                        <components:BarDivider />
+                        <top:BarButtonCombo id="buttonNameCard" />
                     </s:HGroup>
 
                 </s:Group>
@@ -329,8 +347,8 @@
 
                     <s:Spacer width="100%" />
 
-                    <components:BarDividerComponent />
-                    <components:BarButtonComponent id="buttonSettings" />
+                    <components:BarDivider />
+                    <top:BarButton id="buttonSettings" />
 
                 </s:HGroup>
 

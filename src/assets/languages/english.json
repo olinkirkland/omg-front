@@ -28,7 +28,7 @@
   "messageLoggingIn": "Almost there!",
   "labelErrorTitle": "Uh oh!",
   "labelVerifyEmailTitle": "Verification code",
-  "labelVerifyEmailBody": "For verification purposes, a code has been sent to %EMAIL% and should arrive momentarily. Please check your email and enter the code below.",
+  "labelVerifyEmailBody": "For verification purposes, a code has been sent to %EMAIL% and should arrive momentarily. Please check your email and enter the code in the field below.",
   "labelVerifyCode": "Verification code",
   "labelResendVerifyCode": "Didn't get an email?",
   "buttonResendVerifyCode": "Send it again",
@@ -37,5 +37,7 @@
   "labelChooseNameTitle": "Choose your name",
   "labelChooseNameBody": "Enter a name for people to know you by.",
   "labelName": "Name",
-  "buttonSubmitName": "Submit"
+  "buttonSubmitName": "Submit",
+  "labelLogout": "Log Out",
+  "labelLogoutFail": "Couldn't log out. Already logged out."
 }
