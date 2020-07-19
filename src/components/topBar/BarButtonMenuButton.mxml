@@ -41,7 +41,7 @@
 
         private function onClick(event:MouseEvent):void
         {
-            signalManager.dispatch(target.action, target.data);
+            signalManager.dispatch(target.action, target.payload);
         }
 
         public function set text(str:String):void

@@ -7,8 +7,8 @@
     <fx:Script>
 <![CDATA[
         import mx.events.FlexEvent;
-        
-        override public function set data(value: Object): void
+
+        override public function set data(value:Object):void
         {
             super.data = value;
             if (initialized)
@@ -16,8 +16,8 @@
                 myLabel.text = data.text;
             }
         }
-        
-        public function creationComplete(event: FlexEvent): void
+
+        public function creationComplete(event:FlexEvent):void
         {
             if (data)
             {

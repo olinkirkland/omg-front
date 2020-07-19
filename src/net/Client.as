@@ -59,6 +59,7 @@ package net
                     break;
                 case ServerMessageType.LOGIN_SUCCESS:
                     isLoggedIn = true;
+                    id         = payload as String;
                     break;
                 case ServerMessageType.LOGIN_FAIL:
                     // Erase the rememberLogin
@@ -80,9 +81,17 @@ package net
                     break;
                 case ServerMessageType.CHOOSE_NAME_SUCCESS:
                     isLoggedIn = true;
+                    id         = payload as String;
+                    break;
+                case ServerMessageType.LOGOUT_SUCCESS:
+                    isLoggedIn = false;
+                    id         = null;
                     break;
                 case ClientMessageType.LOGOUT:
                     logout();
+                    break;
+                case ClientMessageType.REQUEST_USER_DATA:
+                    send(new Message(signalEvent.action, payload));
                     break;
                 default:
                     break;

@@ -39,5 +39,6 @@
   "labelName": "Name",
   "buttonSubmitName": "Submit",
   "labelLogout": "Log Out",
-  "labelLogoutFail": "Couldn't log out. Already logged out."
+  "labelLogoutFail": "Couldn't log out. Already logged out.",
+  "labelMyProfile": "My Profile"
 }

@@ -6,7 +6,7 @@ package net
         Client -> Server
          */
 
-        public static var USER_DATA:String          = "userData";
+        public static var REQUEST_USER_DATA:String  = "requestUserData";
         public static var REGISTER:String           = "register";
         public static var LOGIN:String              = "login";
         public static var LOGOUT:String             = "logout";

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<pages:Page xmlns:fx="http://ns.adobe.com/mxml/2009"
+            xmlns:s="library://ns.adobe.com/flex/spark"
+            xmlns:pages="pages.*"
+            creationComplete="onCreationComplete(event)"
+            width="100%"
+            height="100%">
+
+    <fx:Script>
+    <![CDATA[
+        import mx.events.FlexEvent;
+
+        import signal.SignalEvent;
+        import signal.SignalManager;
+
+        private function onCreationComplete(event:FlexEvent):void
+        {
+            // Signal Manager
+            signalManager = SignalManager.getInstance();
+            signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
+        }
+
+        override public function handleSignal(signalEvent:SignalEvent):void
+        {
+            // Handle global Signals
+        }
+
+        override public function dispose():void
+        {
+            super.dispose();
+        }
+        ]]>
+    </fx:Script>
+
+    <s:VGroup width="100%"
+              height="100%"
+              padding="12"
+              gap="3">
+
+    </s:VGroup>
+
+</pages:Page>

@@ -12,6 +12,7 @@
 
         import pages.Page;
         import pages.PageType;
+        import pages.ProfilePage;
 
         import pages.SplashPage;
 
@@ -20,7 +21,7 @@
         import signal.SignalType;
 
         private var signalManager:SignalManager;
-        private var page:*;
+        private var page:Page;
 
         private function onCreationComplete(event:FlexEvent):void
         {
@@ -37,12 +38,11 @@
         public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            var id:String = signalEvent.payload as String;
             if (signalEvent.action == SignalType.LOAD_PAGE)
-                loadPage(id);
+                loadPage(signalEvent.payload.type, signalEvent.payload);
         }
 
-        public function loadPage(id:String):void
+        public function loadPage(type:String, payload:Object = null):void
         {
             // Unload current page
             if (page)
@@ -53,15 +53,21 @@
             }
 
             // Load new page
-            if (id == PageType.SPLASH)
+            switch (type)
             {
-                // Load the Splash page by default
-                page = new SplashPage();
-                callLater(function ():void
-                {
-                    addElement(page);
-                });
+                case PageType.SPLASH:
+                    // Load the Splash page by default
+                    page = new SplashPage();
+                    break;
+                case PageType.PROFILE:
+                    page = new ProfilePage();
+                    break;
             }
+
+            callLater(function ():void
+            {
+                addElement(page);
+            });
         }
         ]]>
     </fx:Script>

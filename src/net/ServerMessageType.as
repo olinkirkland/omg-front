@@ -20,5 +20,6 @@ package net
         public static const CHOOSE_NAME_SUCCESS:String       = "chooseNameSuccess";
         public static const LOGOUT_SUCCESS:String            = "logoutSuccess";
         public static const LOGOUT_FAIL:String               = "logoutFail";
+        public static const USER_DATA:String                 = "userData";
     }
 }

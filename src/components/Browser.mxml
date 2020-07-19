@@ -3,6 +3,7 @@
          xmlns:components="components.*"
          xmlns:panes="panes.*"
          xmlns:top="components.topBar.*"
+         initialize="onInitialize(event)"
          creationComplete="onCreationComplete(event)"
          xmlns:s="library://ns.adobe.com/flex/spark">
 
@@ -11,26 +12,24 @@
         import com.greensock.TweenLite;
 
         import managers.DataManager;
+
         import managers.LanguageManager;
+        import managers.User;
+
+        import mx.events.FlexEvent;
 
         import net.Client;
-        import net.ClientMessageType;
         import net.ClientMessageType;
         import net.ServerMessageType;
 
         import pages.PageType;
 
         import popups.BasePopup;
-
-        import mx.events.FlexEvent;
-
         import popups.PopupFactory;
         import popups.PopupType;
 
         import signal.SignalEvent;
-
         import signal.SignalManager;
-        import signal.SignalType;
         import signal.SignalType;
 
         private var popup:BasePopup;
@@ -40,18 +39,26 @@
         private var dataManager:DataManager;
         private var client:Client;
 
-        private function onCreationComplete(event:FlexEvent):void
+        private function onInitialize(event:FlexEvent):void
         {
+            client = new Client();
+            client.addEventListener(Event.CONNECT, onConnect);
+            client.addEventListener(Event.CLOSE, onDisconnect);
+
             buttonNameCard.items = [
                 {
-                    text:   LanguageManager.getText('labelProfile'),
-                    target: {}
+                    text:   LanguageManager.getText("labelMyProfile"),
+                    target: {action: SignalType.LOAD_PAGE, payload: {type: PageType.PROFILE, id: client.id}}
                 },
                 {
-                    text:   LanguageManager.getText('labelLogout'),
+                    text:   LanguageManager.getText("labelLogout"),
                     target: {action: ClientMessageType.LOGOUT}
                 }
             ];
+        }
+
+        private function onCreationComplete(event:FlexEvent):void
+        {
         }
 
         public function start():void
@@ -62,7 +69,6 @@
 
             // Data Manager
             dataManager = DataManager.getInstance();
-            dataManager.addEventListener(DataManager.DATA_UPDATE, handleData);
 
             // Text
             buttonHome.text     = LanguageManager.getText("buttonHome");
@@ -89,7 +95,7 @@
 
             buttonHome.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                signalManager.dispatch(SignalType.LOAD_PAGE, PageType.SPLASH);
+                signalManager.dispatch(SignalType.LOAD_PAGE, {type: PageType.SPLASH});
             });
 
             // Force Resize
@@ -97,17 +103,12 @@
             invalidateDisplayList();
             invalidateParentSizeAndDisplayList();
 
-            // Initial Actions
-            client = new Client();
-            client.addEventListener(Event.CONNECT, onConnect);
-            client.addEventListener(Event.CLOSE, onDisconnect);
-
             // Startup
             startPopup(PopupType.LOADING);
             setTimeout(client.create, 1000);
 
             // Initially, Open the Splash page
-            signalManager.dispatch(SignalType.LOAD_PAGE, PageType.SPLASH);
+            signalManager.dispatch(SignalType.LOAD_PAGE, {type: PageType.SPLASH});
 
             updateUserBar();
         }
@@ -192,6 +193,9 @@
                 case ServerMessageType.LOGOUT_FAIL:
                     startPopup(PopupType.ERROR, "labelLogoutFail");
                     break;
+                case ServerMessageType.LOGOUT_SUCCESS:
+                    callLater(update);
+                    break;
                 case ServerMessageType.USER_NOT_VERIFIED:
                     startPopup(PopupType.VERIFY_EMAIL, payload as String);
                     break;
@@ -209,12 +213,6 @@
             }
         }
 
-        public function handleData(event:Event):void
-        {
-            // Data changed; Refresh
-            update();
-        }
-
         private function update():void
         {
             // Update all
@@ -230,13 +228,13 @@
             if (client.isLoggedIn)
             {
                 // Populate player card
-                var profile:Object = dataManager.data[client.id];
-                if (profile)
-                {
-                    // Profile available
-                    buttonNameCard.text = profile.name;
-                }
+                dataManager.requestUser(client.id, onGetUserMe);
             }
+        }
+
+        private function onGetUserMe(me:User):void
+        {
+            buttonNameCard.text = me.name;
         }
         ]]>
     </fx:Script>
