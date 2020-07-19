@@ -5,44 +5,44 @@
          width="100%"
          height="100%"
          skinClass="skins.PanelSkin">
-    
+
     <fx:Script>
         <![CDATA[
         import mx.events.FlexEvent;
-        
+
         import pages.Page;
-        
+        import pages.PageType;
+
         import pages.SplashPage;
-        
+
         import signal.SignalEvent;
         import signal.SignalManager;
-        
-        private var signalManager: SignalManager;
-        private var page: *;
-        
-        private function onCreationComplete(event: FlexEvent): void
+        import signal.SignalType;
+
+        private var signalManager:SignalManager;
+        private var page:*;
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             // Signal Manager
             signalManager = SignalManager.getInstance();
             signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
-            
+
             // Force Resize
             invalidateSize();
             invalidateDisplayList();
             invalidateParentSizeAndDisplayList();
         }
-        
-        public function handleSignal(signalEvent: SignalEvent): void
+
+        public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            var payload: Object = signalEvent.payload;
-            
-            // Open a page
-            if (payload.hasOwnProperty("loadPage"))
-                loadPage(payload.loadPage.id);
+            var id:String = signalEvent.payload as String;
+            if (signalEvent.action == SignalType.LOAD_PAGE)
+                loadPage(id);
         }
-        
-        public function loadPage(id: String): void
+
+        public function loadPage(id:String):void
         {
             // Unload current page
             if (page)
@@ -51,13 +51,13 @@
                 removeElement(page);
                 page = null;
             }
-            
+
             // Load new page
-            if (id == "splash")
+            if (id == PageType.SPLASH)
             {
                 // Load the Splash page by default
                 page = new SplashPage();
-                callLater(function (): void
+                callLater(function ():void
                 {
                     addElement(page);
                 });

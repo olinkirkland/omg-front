@@ -14,21 +14,20 @@
 
     <fx:Script>
         <![CDATA[
-        import br.com.stimuli.loading.BulkProgressEvent;
-
         import com.greensock.TweenLite;
 
-        import managers.AssetManager;
+        import global.Util;
 
         import mx.events.FlexEvent;
-        import mx.events.ResizeEvent;
 
         import signal.SignalEvent;
         import signal.SignalManager;
+        import signal.SignalType;
 
-        private var assetManager:AssetManager;
         private var signalManager:SignalManager;
 
+        // For launcher use only; Launcher uses this list to determine what assets to download
+        // The client can expect all required assets to be present
         public var assetList:Array = ["splash.json", "wallpapers.zip"]
 
         private function onCreationComplete(event:FlexEvent):void
@@ -37,28 +36,29 @@
             signalManager = SignalManager.getInstance();
             signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
 
-            // Preload everything
-            browserContainer.alpha = 0;
-            progressBar.moveTo(0);
+            browser.alpha = 0;
+            tabChildren   = false;
 
-//            assetManager = AssetManager.getInstance();
-//            assetManager.addEventListener(BulkProgressEvent.PROGRESS, onLoadProgress);
-//            assetManager.addEventListener(BulkProgressEvent.COMPLETE, onLoadComplete);
-//            assetManager.load();
-            preloaderItemsLabel.text = "Loading assets ...";
+            this.addEventListener(MouseEvent.CLICK, onClick);
+        }
 
-            tabChildren = false;
+        private function onClick(event:MouseEvent):void
+        {
+            this.removeEventListener(MouseEvent.CLICK, onClick);
+            if (browser.alpha == 0)
+                start();
+        }
+
+        public function setAssetDirectory(assetDirectory:String):void
+        {
+            Util.LOCAL_STORAGE_PATH = assetDirectory;
         }
 
         public function start():void
         {
-            trace("@omg-front: start()");
-            onPreloaderFadeOut();
-        }
-
-        public function loadAssets():void
-        {
-            trace("loadAssets");
+            // Triggered by launcher
+            browser.start();
+            TweenLite.to(browser, 0.5, {alpha: 1});
         }
 
         private function handleSignal(signalEvent:SignalEvent):void
@@ -66,54 +66,14 @@
             // Handle global Signals
 
             // Stage Quality
-            if (stage && signalEvent.payload.hasOwnProperty("setQuality"))
-                stage.quality = signalEvent.payload.setQuality;
-        }
-
-        private function onLoadProgress(event:BulkProgressEvent):void
-        {
-            progressBar.animateTo((event.itemsLoaded / event.itemsTotal) * 100);
-            preloaderItemsLabel.text = "Loading assets " + event.itemsLoaded + " / " + event.itemsTotal;
-        }
-
-        private function onLoadComplete(event:BulkProgressEvent):void
-        {
-            preloaderItemsLabel.text = "Get ready ...";
-            assetManager.removeEventListener(BulkProgressEvent.PROGRESS, onLoadProgress);
-            assetManager.removeEventListener(BulkProgressEvent.COMPLETE, onLoadComplete);
-            setTimeout(function ():void
-            {
-                TweenLite.to(preloaderGroup, .4, {alpha: 0, onComplete: onPreloaderFadeOut});
-            }, 1000);
-        }
-
-        private function onPreloaderFadeOut():void
-        {
-            removeElement(preloaderGroup);
-            TweenLite.to(browserContainer, .4, {alpha: 1});
-            browser.start();
+            if (stage && signalEvent.action == SignalType.QUALITY)
+                stage.quality = signalEvent.payload as String;
         }
         ]]>
     </fx:Script>
 
-    <s:Group id="browserContainer"
-             width="100%"
-             height="100%">
-
-        <components:BrowserComponent id="browser"
-                                     width="100%"
-                                     height="100%" />
-
-    </s:Group>
-
-    <s:VGroup id="preloaderGroup"
-              width="100%"
-              height="100%"
-              horizontalAlign="center"
-              verticalAlign="middle">
-        <components:ActionLogoComponent />
-        <components:ProgressBarComponent id="progressBar" />
-        <s:Label id="preloaderItemsLabel" />
-    </s:VGroup>
+    <components:BrowserComponent id="browser"
+                                 width="100%"
+                                 height="100%" />
 
 </s:Application>

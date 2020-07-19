@@ -14,14 +14,13 @@
 
         import mx.events.FlexEvent;
 
+        import signal.SignalType;
+
         private var settingsManager:SettingsManager;
 
         private function onCreationComplete(event:FlexEvent):void
         {
             settingsManager = SettingsManager.getInstance();
-
-            // Text
-            versionLabel.text = LanguageManager.getText('labelVersion') + ': ' + Util.VERSION + '\n' + LanguageManager.getText('labelVersionId') + ': ' + Util.VERSION_ID;
 
             // Checkboxes
             if (settingsManager.settings.highQuality)
@@ -53,7 +52,7 @@
             settingsManager.settings.highResolutionWallpapers = highResolutionWallpapersCheckbox.selected;
 
             // Apply quality
-            signalManager.dispatch({setQuality: settingsManager.settings.highQuality ? StageQuality.BEST : StageQuality.LOW});
+            signalManager.dispatch(SignalType.QUALITY, settingsManager.settings.highQuality ? StageQuality.BEST : StageQuality.LOW);
         }
         ]]>
     </fx:Script>
@@ -91,12 +90,6 @@
                       height="100%"
                       padding="10"
                       gap="4">
-                <s:HGroup width="100%"
-                          padding="4"
-                          verticalAlign="middle">
-                    <s:Label id="versionLabel"
-                             fontSize="12" />
-                </s:HGroup>
                 <s:VGroup width="100%"
                           gap="10">
                     <s:HGroup width="100%"
@@ -140,7 +133,7 @@
                           horizontalAlign="center"
                           verticalAlign="middle">
                     <s:Button id="applyButton"
-                              label="{LanguageManager.getText('buttonApply')}"
+                              label="{LanguageManager.getText('buttonApplySettings').toUpperCase()}"
                               skinClass="skins.buttons.PrimaryButtonSkin" />
                 </s:VGroup>
             </s:Panel>

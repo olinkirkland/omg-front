@@ -1,18 +1,20 @@
 package signal
 {
-	import flash.events.Event;
+    import flash.events.Event;
 
 
-	public class SignalEvent extends Event
-	{
-		public var payload : Object;
-		public static var SIGNAL : String = "signal";
+    public class SignalEvent extends Event
+    {
+        public static var SIGNAL:String = "SIGNAL";
 
+        public var action:String;
+        public var payload:Object;
 
-		public function SignalEvent(payload : Object)
-		{
-			this.payload = payload;
-			super(SignalEvent.SIGNAL);
-		}
-	}
+        public function SignalEvent(action:String, payload:Object)
+        {
+            this.action  = action;
+            this.payload = payload;
+            super(SIGNAL);
+        }
+    }
 }

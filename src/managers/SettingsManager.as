@@ -6,12 +6,13 @@ package managers
     import flash.net.SharedObject;
 
     import signal.SignalManager;
+    import signal.SignalType;
 
     public final class SettingsManager extends EventDispatcher
     {
-        private static var _instance: SettingsManager;
-        private var configSharedObject: SharedObject;
-        private var signalManager: SignalManager;
+        private static var _instance:SettingsManager;
+        private var configSharedObject:SharedObject;
+        private var signalManager:SignalManager;
 
         public function SettingsManager()
         {
@@ -23,32 +24,32 @@ package managers
             load();
         }
 
-        public static function getInstance(): SettingsManager
+        public static function getInstance():SettingsManager
         {
             if (!_instance)
                 new SettingsManager();
             return _instance;
         }
 
-        public function get settings(): Object
+        public function get settings():Object
         {
             return configSharedObject.data;
         }
 
-        public function load(): Object
+        public function load():Object
         {
-            configSharedObject = SharedObject.getLocal("omgforever-payload");
+            configSharedObject = SharedObject.getLocal("omgforever-data");
             if (configSharedObject.size == 0)
             {
                 // Config doesn't exist so set all the default settings
-                configSharedObject.data.highQuality = true;
+                configSharedObject.data.highQuality              = true;
                 configSharedObject.data.highResolutionWallpapers = false;
-                configSharedObject.data.rememberLogin = null;
+                configSharedObject.data.rememberLogin            = null;
                 configSharedObject.flush();
             }
 
             // Apply quality
-            signalManager.dispatch({setQuality: configSharedObject.data.highQuality ? StageQuality.BEST : StageQuality.LOW});
+            signalManager.dispatch(SignalType.QUALITY, configSharedObject.data.highQuality ? StageQuality.BEST : StageQuality.LOW);
 
             return configSharedObject.data;
         }

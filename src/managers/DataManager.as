@@ -6,15 +6,16 @@ package managers
 
     import signal.SignalEvent;
     import signal.SignalManager;
+    import signal.SignalType;
 
     public final class DataManager extends EventDispatcher
     {
-        private static var _instance: DataManager;
-        private var signalManager: SignalManager;
+        private static var _instance:DataManager;
+        private var signalManager:SignalManager;
 
-        public static const DATA_UPDATE: String = "dataUpdate";
+        public static const DATA_UPDATE:String = "dataUpdate";
 
-        public var data: Object;
+        public var data:Object;
 
         public function DataManager()
         {
@@ -28,19 +29,19 @@ package managers
             data = {};
         }
 
-        private function handleSignal(signalEvent: SignalEvent): void
+        private function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            var payload: Object = signalEvent.payload;
+            var payload:Object = signalEvent.payload;
 
-            if (payload.hasOwnProperty("requestReturn"))
+            if (signalEvent.action == SignalType.DATA)
             {
-                data[payload.requestReturn.id] = payload.requestReturn.data;
+                data[payload.id] = payload.data;
                 dispatchEvent(new Event(DataManager.DATA_UPDATE));
             }
         }
 
-        public static function getInstance(): DataManager
+        public static function getInstance():DataManager
         {
             if (!_instance)
                 new DataManager();

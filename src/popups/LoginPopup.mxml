@@ -7,12 +7,26 @@
 
     <fx:Script>
         <![CDATA[
+        import global.Color;
+
         import managers.LanguageManager;
 
         import mx.events.FlexEvent;
 
+        import net.ClientMessageType;
+
+        import net.ServerMessageType;
+
+        import signal.SignalEvent;
+
+        import signal.SignalManager;
+
+        import signal.SignalType;
+
         private function onCreationComplete(event:FlexEvent):void
         {
+            signalManager = SignalManager.getInstance();
+
             setTimeout(function ():void
             {
                 inputEmail.setFocus();
@@ -30,6 +44,25 @@
             inputPassword.addEventListener(KeyboardEvent.KEY_UP, updateLoginButton);
 
             updateLoginButton(null);
+        }
+
+        override public function handleSignal(signalEvent:SignalEvent):void
+        {
+            // Handle global Signals
+            var payload:Object = signalEvent.payload;
+
+            // Client action
+            switch (signalEvent.action)
+            {
+                case ServerMessageType.LOGIN_FAIL:
+                    // Show fail message
+                    inputPassword.text = "";
+                    inputEmail.setFocus();
+                    loginFailPanel.includeInLayout = loginFailPanel.visible = true;
+
+                    content.enabled = true;
+                    break;
+            }
         }
 
         override public function dispose():void
@@ -51,17 +84,14 @@
 
         private function onButtonLogin(event:MouseEvent):void
         {
-            signalManager.dispatch({
-                action: "login",
-                args:   {
-                    email:    inputEmail.text,
-                    password: inputPassword.text,
-                    remember: checkRememberPassword.selected
-                }
+            signalManager.dispatch(ClientMessageType.LOGIN,
+                    {
+                        email:    inputEmail.text,
+                        password: inputPassword.text,
+                        remember: checkRememberPassword.selected
+                    });
 
-            });
-
-            buttonLogin.enabled = false;
+            content.enabled = false;
         }
 
         private function onForgotPassword(event:MouseEvent):void
@@ -76,7 +106,7 @@
 
         private function onButtonSwitchToRegister(event:MouseEvent):void
         {
-            signalManager.dispatch({startPopup: {id: PopupTypes.REGISTER}});
+            signalManager.dispatch(SignalType.START_POPUP, {id: PopupType.REGISTER});
             end();
         }
         ]]>
@@ -105,6 +135,21 @@
 
             <s:Spacer height="60" />
 
+            <s:VGroup id="loginFailPanel"
+                      width="100%"
+                      padding="10"
+                      visible="false"
+                      includeInLayout="false">
+                <s:Panel width="100%"
+                         skinClass="skins.NestedPanelSkinAlert">
+                    <s:VGroup width="100%"
+                              padding="15">
+                        <s:Label text="{LanguageManager.getText('labelLoginFail')}"
+                                 color="{Color.white}" />
+                    </s:VGroup>
+                </s:Panel>
+            </s:VGroup>
+
             <s:VGroup width="350">
 
                 <s:Label width="100%"
@@ -130,7 +175,6 @@
                     <s:Spacer width="100%" />
 
                     <s:Button id="buttonLogin"
-                              width="100%"
                               label="{LanguageManager.getText('buttonLogin').toUpperCase()}"
                               skinClass="skins.buttons.PrimaryButtonSkin" />
                 </s:HGroup>
@@ -152,7 +196,8 @@
                           padding="15">
 
                     <s:Button id="buttonForgotPassword"
-                              label="{LanguageManager.getText('buttonForgotPassword').toUpperCase()}" />
+                              label="{LanguageManager.getText('buttonForgotPassword').toUpperCase()}"
+                              visible="false" />
                     <s:Spacer width="100%" />
                     <s:Label id="labelSwitchToRegister"
                              text="{LanguageManager.getText('labelSwitchToRegister')}" />

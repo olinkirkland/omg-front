@@ -11,7 +11,14 @@
 
         import managers.LanguageManager;
 
+        import managers.LanguageManager;
+
         import mx.events.FlexEvent;
+
+        import net.ClientMessageType;
+        import net.ServerMessageType;
+
+        import signal.SignalEvent;
 
         import signal.SignalType;
 
@@ -63,7 +70,7 @@
 
         private function onButtonSwitchToLogin(event:MouseEvent):void
         {
-            signalManager.dispatch({startPopup: {id: PopupTypes.LOGIN}});
+            signalManager.dispatch(SignalType.START_POPUP, {id: PopupType.LOGIN});
             end();
         }
 
@@ -99,15 +106,35 @@
 
         private function onButtonRegister(event:MouseEvent):void
         {
-            signalManager.dispatch({
-                action: SignalType.REGISTER,
-                args:   {
-                    email:    inputEmail.text,
-                    password: inputPassword.text
-                }
+            signalManager.dispatch(ClientMessageType.REGISTER, {
+                email:    inputEmail.text,
+                password: inputPassword.text
             });
 
             buttonRegister.enabled = false;
+        }
+
+        override public function handleSignal(signalEvent:SignalEvent):void
+        {
+            // Handle global Signals
+            var payload:Object = signalEvent.payload;
+
+            // Client action
+            switch (signalEvent.action)
+            {
+                case ServerMessageType.REGISTER_FAIL:
+                    // Show fail message
+                    inputPassword.text        = "";
+                    inputConfirmPassword.text = "";
+                    inputEmail.setFocus();
+                    registerFailPanel.includeInLayout = registerFailPanel.visible = true;
+                    if (signalEvent.payload == "emailNotValid")
+                        labelRegisterFail.text = LanguageManager.getText("labelRegisterFailEmailNotValid");
+                    if (signalEvent.payload == "emailAlreadyInUse")
+                        labelRegisterFail.text = LanguageManager.getText("labelRegisterFailEmailAlreadyInUse");
+                    content.enabled = true;
+                    break;
+            }
         }
         ]]>
     </fx:Script>
@@ -132,7 +159,23 @@
         <s:VGroup id="content"
                   width="100%"
                   horizontalAlign="left">
+
             <s:Spacer height="60" />
+
+            <s:VGroup id="registerFailPanel"
+                      width="100%"
+                      padding="10"
+                      visible="false"
+                      includeInLayout="false">
+                <s:Panel width="100%"
+                         skinClass="skins.NestedPanelSkinAlert">
+                    <s:VGroup width="100%"
+                              padding="15">
+                        <s:Label id="labelRegisterFail"
+                                 color="{Color.white}" />
+                    </s:VGroup>
+                </s:Panel>
+            </s:VGroup>
 
             <s:Label id="labelRegister"
                      text="{LanguageManager.getText('labelRegister')}"
@@ -155,7 +198,7 @@
                     <s:TextInput id="inputEmail"
                                  width="100%" />
 
-                    <s:Spacer height="3"/>
+                    <s:Spacer height="3" />
 
                     <s:Label width="100%"
                              text="{LanguageManager.getText('labelPassword')}" />
@@ -163,7 +206,7 @@
                                  width="100%"
                                  displayAsPassword="true" />
 
-                    <s:Spacer height="3"/>
+                    <s:Spacer height="3" />
 
                     <s:Label width="100%"
                              text="{LanguageManager.getText('labelConfirmPassword')}" />

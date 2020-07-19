@@ -11,6 +11,10 @@
 
         import mx.events.FlexEvent;
 
+        import net.ClientMessageType;
+
+        import signal.SignalType;
+
         private var valid:Boolean;
 
         private function onCreationComplete(event:FlexEvent):void
@@ -37,22 +41,15 @@
 
         private function onSubmitName(event:MouseEvent):void
         {
-            signalManager.dispatch({
-                action: "submitName",
-                args:   {
-                    name: inputSubmitName.text
-                }
-            });
-
-            buttonSubmitName.enabled = false;
+            signalManager.dispatch(ClientMessageType.CHOOSE_NAME, inputSubmitName.text);
+            content.enabled = false;
         }
 
         private function updateSubmitButton(event:Event):void
         {
             callLater(function ():void
             {
-                valid                    = inputSubmitName.text.length != 0;
-                buttonSubmitName.enabled = valid;
+                valid = buttonSubmitName.enabled = inputSubmitName.text.length != 0;
             });
         }
         ]]>
@@ -88,18 +85,21 @@
             </s:Panel>
             <s:VGroup width="100%"
                       height="100%"
-                      padding="10">
+                      padding="10"
+                      horizontalAlign="center">
                 <s:Label id="descriptionLabel"
                          text="{LanguageManager.getText('labelChooseNameBody')}"
                          width="100%"
                          paddingLeft="20"
                          paddingRight="20" />
                 <s:Spacer height="20" />
-                <s:HGroup width="100%"
-                          horizontalAlign="center">
+
+                <s:VGroup width="350">
+                    <s:Label width="100%"
+                             text="{LanguageManager.getText('labelName')}" />
                     <s:TextInput id="inputSubmitName"
-                                 width="350" />
-                </s:HGroup>
+                                 width="100%" />
+                </s:VGroup>
                 <s:Spacer height="20" />
             </s:VGroup>
             <s:Panel width="100%"

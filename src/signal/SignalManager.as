@@ -6,7 +6,7 @@ package signal
 
     public class SignalManager extends EventDispatcher
     {
-        private static var _instance: SignalManager;
+        private static var _instance:SignalManager;
 
 
         public function SignalManager()
@@ -17,21 +17,14 @@ package signal
         }
 
 
-        public function dispatch(payload: Object): void
+        public function dispatch(action:String, payload:Object):void
         {
             // Dispatch
-            if (payload)
-            {
-                dispatchEvent(new SignalEvent(payload));
-            }
-            else
-            {
-                trace("Payload cannot be null")
-            }
+            dispatchEvent(new SignalEvent(action, payload));
         }
 
 
-        public static function getInstance(): SignalManager
+        public static function getInstance():SignalManager
         {
             if (!_instance)
             {

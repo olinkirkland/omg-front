@@ -3,20 +3,16 @@ package net
 
     import flash.events.*;
 
-    /**
-     * ...
-     * @author Olin Kirkland
-     */
     public class MessageEvent extends Event
     {
-        public static var DATA: String = "messageEventData";
+        public static var DATA:String = "messageEventData";
 
-        public var data: Object;
+        public var message:Message;
 
-        public function MessageEvent(data: Object): void
+        public function MessageEvent(message:Message):void
         {
             super(MessageEvent.DATA);
-            this.data = data;
+            this.message = message;
         }
     }
 }

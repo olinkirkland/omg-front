@@ -13,17 +13,23 @@
         import managers.LanguageManager;
 
         import net.Client;
+        import net.ClientMessageType;
+        import net.ServerMessageType;
+
+        import pages.PageType;
 
         import popups.BasePopup;
 
         import mx.events.FlexEvent;
 
         import popups.PopupFactory;
-        import popups.PopupTypes;
+        import popups.PopupType;
 
         import signal.SignalEvent;
 
         import signal.SignalManager;
+        import signal.SignalType;
+        import signal.SignalType;
 
         private var popup:BasePopup;
         private var queuedPopupId:String;
@@ -33,6 +39,10 @@
         private var client:Client;
 
         private function onCreationComplete(event:FlexEvent):void
+        {
+        }
+
+        public function start():void
         {
             // Signal Manager
             signalManager = SignalManager.getInstance();
@@ -52,23 +62,22 @@
             // Event Listeners
             buttonLogin.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                startPopup(PopupTypes.LOGIN);
+                startPopup(PopupType.LOGIN);
             });
 
             buttonRegister.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                startPopup(PopupTypes.REGISTER);
+                startPopup(PopupType.REGISTER);
             });
 
             buttonSettings.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                startPopup(PopupTypes.SETTINGS);
+                startPopup(PopupType.SETTINGS);
             });
 
             buttonHome.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
-                var command:Object = {"loadPage": {id: "splash"}};
-                signalManager.dispatch(command);
+                signalManager.dispatch(SignalType.LOAD_PAGE, PageType.SPLASH);
             });
 
             // Force Resize
@@ -80,17 +89,13 @@
             client = new Client();
             client.addEventListener(Event.CONNECT, onConnect);
             client.addEventListener(Event.CLOSE, onDisconnect);
-        }
 
-        public function start():void
-        {
             // Startup
-            startPopup(PopupTypes.LOADING);
+            startPopup(PopupType.LOADING);
             setTimeout(client.create, 1000);
 
             // Initially, Open the Splash page
-            var command:Object = {"loadPage": {id: "splash"}};
-            signalManager.dispatch(command);
+            signalManager.dispatch(SignalType.LOAD_PAGE, PageType.SPLASH);
 
             updateUserBar();
         }
@@ -102,7 +107,7 @@
 
         private function onDisconnect(event:Event):void
         {
-            startPopup(PopupTypes.LOADING);
+            startPopup(PopupType.LOADING);
         }
 
         private function startPopup(id:String, payload:Object = null):void
@@ -113,20 +118,20 @@
                 popup.end();
                 queuedPopupId      = id;
                 queuedPopupPayload = payload;
-            } else
-            {
-                // Start the popup
-                popupShade.visible = true;
-                TweenLite.to(popupShade, 1, {alpha: 1, onComplete: onPopupShadeComplete});
-                popup = PopupFactory.makePopup(id);
-                if (popup)
-                {
-                    popup.payload = payload;
-                    popup.addEventListener(Event.COMPLETE, onEndPopup);
-                    popupContainer.addElement(popup);
+                return;
+            }
 
-                    setTimeout(popup.start, 100);
-                }
+            // Start the popup
+            popupShade.visible = true;
+            TweenLite.to(popupShade, 1, {alpha: 1, onComplete: onPopupShadeComplete});
+            popup = PopupFactory.makePopup(id);
+            if (popup)
+            {
+                popup.payload = payload;
+                popup.addEventListener(Event.COMPLETE, onEndPopup);
+                popupContainer.addElement(popup);
+
+                setTimeout(popup.start, 100);
             }
         }
 
@@ -156,31 +161,32 @@
 
         public function handleSignal(signalEvent:SignalEvent):void
         {
-            // Handle global Signals
             var payload:Object = signalEvent.payload;
 
-            // Open a new Popup
-            if (payload.hasOwnProperty("startPopup"))
-                startPopup(payload.startPopup.id, payload.startPopup.payload);
-
-            // Close the Popup
-            if (payload.hasOwnProperty("endPopup"))
-                popup.end();
-
-            // Login
-            if (payload.hasOwnProperty("login"))
+            switch (signalEvent.action)
             {
-                // Download my profile data
-                callLater(function ():void
-                {
-                    signalManager.dispatch({send: {request: {category: "users", id: client.id}}});
+                case SignalType.START_POPUP:
+                    startPopup(payload.id, payload.payload);
+                    break;
+                case SignalType.END_POPUP:
                     popup.end();
-                });
+                    break;
+                case ServerMessageType.REGISTER_SUCCESS:
+                    popup.end();
+                    break;
+                case ServerMessageType.LOGIN_SUCCESS:
+                    popup.end();
+                    break;
+                case ServerMessageType.USER_NOT_VERIFIED:
+                    startPopup(PopupType.VERIFY_EMAIL, payload as String);
+                    break;
+                case ServerMessageType.USER_NOT_NAMED:
+                    startPopup(PopupType.CHOOSE_NAME);
+                    break;
+                case ClientMessageType.LOGOUT:
+                    callLater(update);
+                    break;
             }
-
-            // Logout
-            if (payload.hasOwnProperty("logout"))
-                callLater(update);
         }
 
         public function handleData(event:Event):void

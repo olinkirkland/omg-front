@@ -4,13 +4,10 @@
          initialize="onInitialize(event)">
     <fx:Script><![CDATA[
         import com.greensock.TweenLite;
-        import com.greensock.easing.Ease;
-        import com.greensock.easing.Elastic;
 
         import mx.events.FlexEvent;
 
         import signal.SignalEvent;
-
         import signal.SignalManager;
 
         import spark.primitives.BitmapImage;
@@ -66,6 +63,7 @@
 
         public function start():void
         {
+            trace("popup.start: " + getQualifiedClassName(this));
             visible       = true;
             animationMode = true;
             TweenLite.killTweensOf(this);
@@ -93,6 +91,7 @@
 
         public function end():void
         {
+            trace("popup.end: " + getQualifiedClassName(this));
             animationMode = true;
             TweenLite.killTweensOf(this);
 

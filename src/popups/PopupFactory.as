@@ -12,28 +12,28 @@ package popups
             // Return a Popup
             switch (id)
             {
-                case PopupTypes.LOGIN:
+                case PopupType.LOGIN:
                     return new LoginPopup();
                     break;
-                case PopupTypes.REGISTER:
+                case PopupType.REGISTER:
                     return new RegisterPopup();
                     break;
-                case PopupTypes.LOADING:
+                case PopupType.LOADING:
                     return new LoadingPopup();
                     break;
-                case PopupTypes.PAPER:
+                case PopupType.PAPER:
                     return new PaperPopup();
                     break;
-                case PopupTypes.SETTINGS:
+                case PopupType.SETTINGS:
                     return new SettingsPopup();
                     break;
-                case PopupTypes.ERROR:
+                case PopupType.ERROR:
                     return new ErrorPopup();
                     break;
-                case PopupTypes.VERIFY_EMAIL:
+                case PopupType.VERIFY_EMAIL:
                     return new VerifyEmailPopup();
                     break;
-                case PopupTypes.CHOOSE_NAME:
+                case PopupType.CHOOSE_NAME:
                     return new ChooseNamePopup();
                     break;
                 default:

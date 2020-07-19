@@ -8,6 +8,8 @@
     <fx:Script><![CDATA[
         import mx.events.FlexEvent;
 
+        import signal.SignalEvent;
+
         import signal.SignalManager;
 
         [Bindable]
@@ -19,7 +21,7 @@
         [Bindable]
         public var color:uint;
 
-        public var payload:Object;
+        public var data:Object;
 
         private var signalManager:SignalManager;
 
@@ -35,8 +37,8 @@
         {
             if (event.target == button)
             {
-                if (payload)
-                    signalManager.dispatch(payload);
+                if (data)
+                    signalManager.dispatch(data.action, data.payload);
                 dispatchEvent(event);
             } else
             {
@@ -57,7 +59,7 @@
               horizontalAlign="center"
               verticalAlign="middle">
         <s:Button id="button"
-                  label="{buttonText}" />
+                  label="{buttonText.toUpperCase()}" />
     </s:VGroup>
 
     <s:VGroup width="100%"

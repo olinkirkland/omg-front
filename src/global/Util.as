@@ -8,6 +8,7 @@ package global
     import flash.display.BitmapData;
     import flash.geom.Matrix;
     import flash.net.SharedObject;
+    import flash.net.URLRequest;
     import flash.utils.ByteArray;
 
     import managers.SettingsManager;
@@ -20,26 +21,15 @@ package global
         public static var VERSION:String;
         public static var VERSION_ID:String;
 
+        // Assets
+        public static var LOCAL_STORAGE_PATH:String = "";
+
         // Server Address
         public static const ADDRESS:Object = {IP: "127.0.0.1", PORT: 43699};
 
-        // Domain
-        public static const DOMAIN:String = "http://www.omgforever.com/";
-
-        // Items
-        [Embed(source="/assets/items.json", mimeType="application/octet-stream")]
-        public static const ITEMS_JSON:Class;
-        public static var ITEMS:Object;
-
-        // Splash
-        [Embed(source="/assets/splash.json", mimeType="application/octet-stream")]
-        public static const SPLASH_JSON:Class;
-
-        public static function formatAssetURL(url:String):String
+        public static function local(url:String):String
         {
-            var settingsManager:SettingsManager = SettingsManager.getInstance();
-            var wallpaperResolution:String      = settingsManager.settings.highResolutionWallpapers ? "hr" : "sr";
-            return DOMAIN + url.replace("%WALLPAPER_RESOLUTION%", wallpaperResolution);
+            return LOCAL_STORAGE_PATH + url;
         }
 
         public static function hash(str:String, iterations:int = 1):String
@@ -52,6 +42,12 @@ package global
                 str                  = String(Hex.fromArray(digest))
             }
             return str;
+        }
+
+        public static function formatAssetURL(url:String):String {
+            var settingsManager:SettingsManager = SettingsManager.getInstance();
+            var wallpaperResolution:String = settingsManager.settings.highResolutionWallpapers ? "hr" : "sr";
+            return url.replace("%WALLPAPER_RESOLUTION%", wallpaperResolution);
         }
 
         public static function formatFileSize(bytes:Number, decimalSignificantUnits:Boolean = true, fixedDecimalLength:int = 2, fullWord:Boolean = false):String

@@ -5,7 +5,7 @@
             creationComplete="onCreationComplete(event)"
             width="100%"
             height="100%">
-    
+
     <fx:Script>
     <![CDATA[
         import components.DynamicPanImageButtonComponent;
@@ -25,15 +25,24 @@
             signalManager = SignalManager.getInstance();
             signalManager.addEventListener(SignalEvent.SIGNAL, handleSignal);
 
-            payload = JSON.parse(new Util.SPLASH_JSON());
+            var loader:URLLoader = new URLLoader();
+            loader.addEventListener(Event.COMPLETE, onRead);
+            var r:URLRequest = new URLRequest(Util.local("splash.json"));
+            loader.load(r);
+        }
+
+        public function onRead(event:Event):void
+        {
+            payload = JSON.parse(event.target.data);
 
             // Set spotlight
             var spotlight:DynamicPanImageButtonComponent = new DynamicPanImageButtonComponent();
-            spotlight.source                             = Util.formatAssetURL(payload.spotlight.image) + "?" + Util.VERSION;
-            spotlight.color                              = payload.spotlight.imageColor;
-            spotlight.buttonText                         = payload.spotlight.buttonText;
-            spotlight.labelText                          = payload.spotlight.labelText;
-            spotlight.payload                            = payload.spotlight.payload;
+            spotlight.source                             = Util.local(Util.formatAssetURL(payload.spotlight.image));
+            trace(spotlight.source);
+            spotlight.color      = payload.spotlight.imageColor;
+            spotlight.buttonText = payload.spotlight.buttonText;
+            spotlight.labelText  = payload.spotlight.labelText;
+            spotlight.data       = payload.spotlight.data;
             spotlightGroup.addElement(spotlight);
 
             // Set features
@@ -41,11 +50,12 @@
             for each (var featureObject:Object in payload.features)
             {
                 var feature:DynamicPanImageButtonComponent = new DynamicPanImageButtonComponent();
-                feature.source                             = Util.formatAssetURL(featureObject.image) + "?" + Util.VERSION;
-                feature.color                              = featureObject.imageColor;
-                feature.buttonText                         = featureObject.buttonText;
-                feature.labelText                          = featureObject.labelText;
-                feature.payload                            = featureObject.payload;
+                feature.source                             = Util.local(Util.formatAssetURL(featureObject.image));
+                trace(feature.source);
+                feature.color      = featureObject.imageColor;
+                feature.buttonText = featureObject.buttonText;
+                feature.labelText  = featureObject.labelText;
+                feature.data       = featureObject.data;
                 featuresGroup.addElement(feature);
                 features.push(feature);
             }
@@ -67,21 +77,21 @@
         }
         ]]>
     </fx:Script>
-    
+
     <s:VGroup width="100%"
               height="100%"
               padding="12"
               gap="3">
-        
+
         <s:HGroup width="100%"
                   height="60%"
                   id="spotlightGroup" />
-        
+
         <s:HGroup width="100%"
                   height="40%"
                   id="featuresGroup"
                   gap="3" />
-    
+
     </s:VGroup>
 
 </pages:Page>

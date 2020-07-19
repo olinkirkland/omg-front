@@ -16,6 +16,6 @@ package net
         public static var SEND_VERIFY_EMAIL_FAIL:String    = "sendVerifyEmailFail";
         public static var VERIFY_EMAIL_SUCCESS:String      = "verifyEmailSuccess";
         public static var VERIFY_EMAIL_FAIL:String         = "verifyEmailFail";
-        public static var NAME_CHANGED:String              = "nameChanged";
+        public static var CHOOSE_NAME_SUCCESS:String       = "chooseNameSuccess";
     }
 }

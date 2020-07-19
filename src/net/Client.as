@@ -10,6 +10,7 @@ package net
 
     import signal.SignalEvent;
     import signal.SignalManager;
+    import signal.SignalType;
 
     /**
      * ...
@@ -45,36 +46,34 @@ package net
             var payload:Object = signalEvent.payload;
 
             // Client action
-            if (payload.hasOwnProperty("action"))
+            switch (signalEvent.action)
             {
-                var args:Object = payload.args;
-                switch (payload.action)
-                {
-                    case "register":
-                        register(args.email, args.password, args.betaKey);
-                        break;
-                    case "login":
-                        login(args.email, args.password, args.remember);
-                        break;
-                    case "rawLogin":
-                        rawLogin(args.email, args.password);
-                        break;
-                    case "resendVerifyCode":
-                        resendVerifyCode(args.email);
-                        break;
-                    case "submitVerifyCode":
-                        submitVerifyCode(args.email, args.verifyCode);
-                        break;
-                    case "submitName":
-                        chooseName(args.name);
-                        break;
-                    case "logout":
-                        logout();
-                        break;
-                    default:
-                        trace("Unhandled Action: " + payload.action);
-                        break;
-                }
+                case ClientMessageType.REGISTER:
+                    register(payload.email, payload.password);
+                    break;
+                case ServerMessageType.REGISTER_SUCCESS:
+                    rawLogin(payload.email, payload.password);
+                    break;
+                case ClientMessageType.LOGIN:
+                    login(payload.email, payload.password, payload.remember);
+                    break;
+                case SignalType.RAW_LOGIN:
+                    rawLogin(payload.email, payload.password);
+                    break;
+                case ClientMessageType.RESEND_VERIFY_CODE:
+                    resendVerifyCode(payload as String);
+                    break;
+                case ClientMessageType.SUBMIT_VERIFY_CODE:
+                    submitVerifyCode(payload.email, payload.verifyCode);
+                    break;
+                case ClientMessageType.CHOOSE_NAME:
+                    chooseName(payload as String);
+                    break;
+                case ClientMessageType.LOGOUT:
+                    logout();
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -120,12 +119,11 @@ package net
             connect();
         }
 
-        public function register(email:String, password:String, betaKey:String):void
+        public function register(email:String, password:String):void
         {
             // Register
             var salt:String = Util.hash(email, 10);
             password        = Util.hash(password + salt, 2000);
-
             send(new Message(ClientMessageType.REGISTER, {email: email, password: password}));
         }
 
@@ -165,7 +163,7 @@ package net
         public function logout():void
         {
             // Logout
-            var config:SharedObject   = SharedObject.getLocal("omgforever-payload");
+            var config:SharedObject   = SharedObject.getLocal("omgforever-data");
             config.data.rememberLogin = null;
             config.flush();
 
@@ -186,11 +184,8 @@ package net
 
                 trace("[received] " + JSON.stringify(data));
 
-                // Todo this
-
-
-                signalManager.dispatch(data);
-                dispatchEvent(new MessageEvent(data));
+                signalManager.dispatch(data.type, data.data);
+                dispatchEvent(new MessageEvent(Message.serialize(data)));
             } catch (error:Error)
             {
                 // Not an object

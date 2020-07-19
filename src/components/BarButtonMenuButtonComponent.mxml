@@ -2,49 +2,50 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
          creationComplete="onComplete(event)">
-    
+
     <fx:Script><![CDATA[
         import mx.events.FlexEvent;
-        
+
         import signal.SignalManager;
-        
-        private var signalManager: SignalManager;
-        public var target: Object;
-        
-        private function onComplete(event: FlexEvent): void
+
+        private var signalManager:SignalManager;
+        public var target:Object;
+
+        private function onComplete(event:FlexEvent):void
         {
             signalManager = SignalManager.getInstance();
-            
+
             addEventListener(MouseEvent.MOUSE_OVER, onOver);
             addEventListener(MouseEvent.MOUSE_OUT, onOut);
             addEventListener(MouseEvent.MOUSE_UP, onOver);
             addEventListener(MouseEvent.MOUSE_DOWN, onDown);
             addEventListener(MouseEvent.CLICK, onClick);
-            
+
             label.alpha = .8;
         }
-        
-        private function onOver(event: MouseEvent): void
+
+        private function onOver(event:MouseEvent):void
         {
             label.alpha = 1;
         }
-        
-        private function onOut(event: MouseEvent): void
+
+        private function onOut(event:MouseEvent):void
         {
             label.alpha = .7;
         }
-        
-        private function onDown(event: MouseEvent): void
+
+        private function onDown(event:MouseEvent):void
         {
             label.alpha = 1;
         }
-        
-        private function onClick(event: MouseEvent): void
+
+        private function onClick(event:MouseEvent):void
         {
-            signalManager.dispatch(target);
+            trace(target);
+            //signalManager.dispatch(target);
         }
-        
-        public function set text(str: String): void
+
+        public function set text(str:String):void
         {
             label.text = str;
         }
