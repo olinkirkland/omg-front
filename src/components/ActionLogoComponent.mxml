@@ -3,56 +3,55 @@
                 xmlns:mx="library://ns.adobe.com/flex/mx"
                 initialize="onInitialize(event)"
                 creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
         import mx.events.FlexEvent;
-        
-        private var nested: Asset_ActionLogo;
-        
-        private function onInitialize(event: FlexEvent): void
+
+        private var nested:Asset_ActionLogo;
+
+        private function onInitialize(event:FlexEvent):void
         {
             nested = new Asset_ActionLogo();
         }
-        
-        private function onCreationComplete(event: FlexEvent): void
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             addChild(nested);
-            
             invalidateSize();
         }
 
-        override protected function measure(): void
+        override protected function measure():void
         {
-            measuredWidth = width;
+            measuredWidth  = width;
             measuredHeight = height;
         }
 
 
-        override public function set width(value: Number): void
+        override public function set width(value:Number):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
-                nested.width = value;
+                nested.width  = value;
                 nested.scaleY = nested.scaleX;
             });
         }
-        
-        override public function set height(value: Number): void
+
+        override public function set height(value:Number):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
                 nested.height = value;
                 nested.scaleX = nested.scaleY;
             });
         }
-        
-        override public function get width(): Number
+
+        override public function get width():Number
         {
             return nested.width;
         }
-        
-        override public function get height(): Number
+
+        override public function get height():Number
         {
             return nested.height;
         }

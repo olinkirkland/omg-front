@@ -9,26 +9,34 @@
         <![CDATA[
         import mx.events.FlexEvent;
 
-        private var nested: Asset_Logo;
+        private var nested:Asset_Card;
 
-        private function onInitialize(event: FlexEvent): void
+        private function onInitialize(event:FlexEvent):void
         {
-            nested = new Asset_Logo();
+            nested = new Asset_Card();
             height = nested.height;
         }
 
-        private function onCreationComplete(event: FlexEvent): void
+        private function onCreationComplete(event:FlexEvent):void
         {
             addChild(nested);
             invalidateSize();
         }
 
-        override public function get width(): Number
+        public function set text(str:String):void
+        {
+            var txt:TextField            = nested.card.txt;
+            txt.text                     = str;
+            txt.width                    = txt.textWidth + 30;
+            nested.card.background.width = txt.width;
+        }
+
+        override public function get width():Number
         {
             return nested.width;
         }
 
-        override public function get height(): Number
+        override public function get height():Number
         {
             return nested.height;
         }

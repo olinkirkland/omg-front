@@ -10,7 +10,6 @@
         import signal.SignalEvent;
         import signal.SignalManager;
 
-        protected var payload:Object;
         protected var signalManager:SignalManager;
 
         private function onCreationComplete(event:FlexEvent):void

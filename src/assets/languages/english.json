@@ -40,5 +40,8 @@
   "buttonSubmitName": "Submit",
   "labelLogout": "Log Out",
   "labelLogoutFail": "Couldn't log out. Already logged out.",
-  "labelMyProfile": "My Profile"
+  "labelMyProfile": "My Profile",
+  "labelLevel": "Level",
+  "cardHome": "home",
+  "cardProfile": "people"
 }

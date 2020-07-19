@@ -1,17 +1,23 @@
 <?xml version="1.0"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          creationComplete="onCreationComplete(event)"
          xmlns:s="library://ns.adobe.com/flex/spark"
          width="100%"
-         height="100%"
-         skinClass="skins.PanelSkin">
+         height="100%">
 
     <fx:Script>
         <![CDATA[
+        import components.Browser;
+
+        import managers.LanguageManager;
+
         import mx.events.FlexEvent;
+
+        import net.Client;
 
         import pages.Page;
         import pages.PageType;
+        import pages.ProfilePage;
         import pages.ProfilePage;
 
         import pages.SplashPage;
@@ -22,6 +28,9 @@
 
         private var signalManager:SignalManager;
         private var page:Page;
+
+        [Bindable]
+        public var browser:Browser;
 
         private function onCreationComplete(event:FlexEvent):void
         {
@@ -49,7 +58,6 @@
             {
                 (page as Page).dispose();
                 removeElement(page);
-                page = null;
             }
 
             // Load new page
@@ -58,9 +66,14 @@
                 case PageType.SPLASH:
                     // Load the Splash page by default
                     page = new SplashPage();
+                    browser.updateCard(LanguageManager.getText("cardHome"));
                     break;
                 case PageType.PROFILE:
                     page = new ProfilePage();
+                    browser.updateCard(LanguageManager.getText("cardProfile"));
+                    if (payload.id == -1)
+                        payload.id = Client.id;
+                    ProfilePage(page).load(payload.id as String);
                     break;
             }
 
@@ -72,4 +85,4 @@
         ]]>
     </fx:Script>
 
-</s:Panel>
+</s:Group>

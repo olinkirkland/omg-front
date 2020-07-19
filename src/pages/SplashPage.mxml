@@ -18,6 +18,7 @@
         import signal.SignalManager;
 
         private var features:Array;
+        private var payload:Object;
 
         private function onCreationComplete(event:FlexEvent):void
         {
@@ -78,20 +79,28 @@
         ]]>
     </fx:Script>
 
-    <s:VGroup width="100%"
-              height="100%"
-              padding="12"
-              gap="3">
+    <s:Group width="100%"
+             height="100%">
 
-        <s:HGroup width="100%"
-                  height="60%"
-                  id="spotlightGroup" />
+        <s:Panel width="100%"
+                 height="100%" />
 
-        <s:HGroup width="100%"
-                  height="40%"
-                  id="featuresGroup"
-                  gap="3" />
+        <s:VGroup width="100%"
+                  height="100%"
+                  padding="12"
+                  gap="3">
 
-    </s:VGroup>
+            <s:HGroup width="100%"
+                      height="60%"
+                      id="spotlightGroup" />
+
+            <s:HGroup width="100%"
+                      height="40%"
+                      id="featuresGroup"
+                      gap="3" />
+
+        </s:VGroup>
+
+    </s:Group>
 
 </pages:Page>

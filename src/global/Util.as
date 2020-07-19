@@ -44,9 +44,10 @@ package global
             return str;
         }
 
-        public static function formatAssetURL(url:String):String {
+        public static function formatAssetURL(url:String):String
+        {
             var settingsManager:SettingsManager = SettingsManager.getInstance();
-            var wallpaperResolution:String = settingsManager.settings.highResolutionWallpapers ? "hr" : "sr";
+            var wallpaperResolution:String      = settingsManager.settings.highResolutionWallpapers ? "hr" : "sr";
             return url.replace("%WALLPAPER_RESOLUTION%", wallpaperResolution);
         }
 

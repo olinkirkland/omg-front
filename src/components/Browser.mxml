@@ -48,13 +48,18 @@
             buttonNameCard.items = [
                 {
                     text:   LanguageManager.getText("labelMyProfile"),
-                    target: {action: SignalType.LOAD_PAGE, payload: {type: PageType.PROFILE, id: client.id}}
+                    target: {action: SignalType.LOAD_PAGE, payload: {type: PageType.PROFILE, id: -1}}
                 },
                 {
                     text:   LanguageManager.getText("labelLogout"),
                     target: {action: ClientMessageType.LOGOUT}
                 }
             ];
+        }
+
+        public function updateCard(str:String):void
+        {
+            card.text = str;
         }
 
         private function onCreationComplete(event:FlexEvent):void
@@ -71,11 +76,11 @@
             dataManager = DataManager.getInstance();
 
             // Text
-            buttonHome.text     = LanguageManager.getText("buttonHome");
-            buttonSocial.text   = LanguageManager.getText("buttonSocial");
-            buttonLogin.text    = LanguageManager.getText("buttonLogin");
-            buttonRegister.text = LanguageManager.getText("buttonRegister");
-            buttonSettings.text = LanguageManager.getText("buttonSettings");
+            buttonHome.text     = LanguageManager.getText("buttonHome").toUpperCase();
+            buttonSocial.text   = LanguageManager.getText("buttonSocial").toUpperCase();
+            buttonLogin.text    = LanguageManager.getText("buttonLogin").toUpperCase();
+            buttonRegister.text = LanguageManager.getText("buttonRegister").toUpperCase();
+            buttonSettings.text = LanguageManager.getText("buttonSettings").toUpperCase();
 
             // Event Listeners
             buttonLogin.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
@@ -228,7 +233,7 @@
             if (client.isLoggedIn)
             {
                 // Populate player card
-                dataManager.requestUser(client.id, onGetUserMe);
+                dataManager.requestUser(Client.id, onGetUserMe);
             }
         }
 
@@ -261,8 +266,14 @@
                               bottom="0"
                               gap="0">
                         <s:Spacer height="2" />
-                        <components:ActionLogoComponent id="logo"
-                                                        height="60" />
+                        <s:VGroup>
+                            <components:Card id="card"
+                                             x="15"
+                                             y="35"
+                                             includeInLayout="false" />
+                            <components:ActionLogoComponent id="logo"
+                                                            height="60" />
+                        </s:VGroup>
                     </s:VGroup>
 
                     <s:Spacer width="20" />
@@ -314,7 +325,8 @@
 
                         <s:Spacer width="40" />
                         <components:BarDivider />
-                        <top:BarButtonCombo id="buttonNameCard" />
+                        <top:BarButtonCombo id="buttonNameCard"
+                                            rightAlign="true" />
                     </s:HGroup>
 
                 </s:Group>
@@ -330,7 +342,8 @@
                   paddingTop="30"
                   depth="-1">
             <panes:PaneBase width="100%"
-                            height="100%" />
+                            height="100%"
+                            browser="{this}" />
         </s:HGroup>
 
         <s:VGroup width="100%">

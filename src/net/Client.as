@@ -3,6 +3,7 @@ package net
 
     import flash.events.*;
     import flash.net.*;
+    import flash.utils.setTimeout;
 
     import global.Util;
 
@@ -26,7 +27,7 @@ package net
         public var isLoggedIn:Boolean = false;
 
         // id refers to the id of the currently logged in user
-        public var id:String = "";
+        public static var id:String = "";
 
         public function Client():void
         {
@@ -128,7 +129,12 @@ package net
             send(new Message(ClientMessageType.CONFIRM_CONNECTION));
 
             if (settingsManager.settings.rememberLogin)
-                rawLogin(settingsManager.settings.rememberLogin.email, settingsManager.settings.rememberLogin.password);
+            {
+                setTimeout(function ():void
+                {
+                    rawLogin(settingsManager.settings.rememberLogin.email, settingsManager.settings.rememberLogin.password);
+                }, 250);
+            }
         }
 
         private function handleDisconnect(e:Event):void

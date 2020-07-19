@@ -24,6 +24,10 @@ Fonts
 Components
  */
 
+s|Panel {
+    skinClass: ClassReference("skins.PanelSkin");
+}
+
 s|VScrollBar {
     skinClass: ClassReference("skins.VScrollBarSkin");
 }

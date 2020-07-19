@@ -7,6 +7,9 @@ package managers
 
         public var name:String;
 
+        public var aboutTitle:String;
+        public var aboutBody:String;
+
         public var coins:int;
         public var experience:int;
         public var level:int;
@@ -21,6 +24,8 @@ package managers
             user.id         = untypedUser.id;
             user.email      = untypedUser.email;
             user.name       = untypedUser.name;
+            user.aboutTitle = untypedUser.aboutTitle;
+            user.aboutBody  = untypedUser.aboutBody;
             user.coins      = untypedUser.coins;
             user.experience = untypedUser.experience;
             user.level      = untypedUser.level;

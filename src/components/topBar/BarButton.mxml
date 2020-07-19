@@ -3,96 +3,96 @@
                 xmlns:mx="library://ns.adobe.com/flex/mx"
                 initialize="onInitialize(event)"
                 creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
         import mx.events.FlexEvent;
-        
-        private var nested: Asset_BarButton;
-        private var _text: String = "[?]";
-        private var fixedWidth: Boolean = false;
-        
-        private function onInitialize(event: FlexEvent): void
+
+        private var nested:Asset_BarButton;
+        private var _text:String       = "[?]";
+        private var fixedWidth:Boolean = false;
+
+        private function onInitialize(event:FlexEvent):void
         {
             nested = new Asset_BarButton();
-            
+
             nested.background.gotoAndStop("out");
-            
+
             mouseChildren = false;
-            
+
             addEventListener(MouseEvent.MOUSE_OVER, onOver);
             addEventListener(MouseEvent.MOUSE_OUT, onOut);
             addEventListener(MouseEvent.MOUSE_DOWN, onDown);
             addEventListener(MouseEvent.MOUSE_UP, onOver);
         }
-        
-        public function set text(str: String): void
+
+        public function set text(str:String):void
         {
             _text = str;
             if (nested)
             {
-                nested.txt.text = _text.toUpperCase();
+                nested.txt.text = _text;
                 if (!fixedWidth)
                 {
-                    nested.txt.width = nested.txt.textWidth + 40;
+                    nested.txt.width        = nested.txt.textWidth + 40;
                     nested.background.width = nested.txt.width;
                 }
-                
+
                 invalidateSize();
                 invalidateParentSizeAndDisplayList();
             }
         }
-        
-        private function onCreationComplete(event: FlexEvent): void
+
+        private function onCreationComplete(event:FlexEvent):void
         {
             addChild(nested);
-            
+
             text = _text;
-            
+
             invalidateSize();
             invalidateParentSizeAndDisplayList();
         }
-        
-        override protected function measure(): void
+
+        override protected function measure():void
         {
-            measuredWidth = width;
+            measuredWidth  = width;
             measuredHeight = height;
         }
-        
-        public function onOver(e: Event = null): void
+
+        public function onOver(e:Event = null):void
         {
             nested.background.gotoAndStop("over");
         }
-        
-        public function onOut(e: Event = null): void
+
+        public function onOut(e:Event = null):void
         {
             nested.background.gotoAndStop("out");
         }
-        
-        public function onDown(e: Event = null): void
+
+        public function onDown(e:Event = null):void
         {
             nested.background.gotoAndStop("down");
         }
-        
-        override public function set width(w: Number): void
+
+        override public function set width(w:Number):void
         {
-            callLater(function (): void
+            callLater(function ():void
             {
-                fixedWidth = true;
-                nested.txt.width = w;
+                fixedWidth              = true;
+                nested.txt.width        = w;
                 nested.background.width = nested.txt.width;
-                
+
                 invalidateSize();
                 invalidateParentSizeAndDisplayList();
             });
         }
-        
-        override public function get width(): Number
+
+        override public function get width():Number
         {
             return nested.background.width;
         }
-        
-        override public function get height(): Number
+
+        override public function get height():Number
         {
             return nested.background.height;
         }

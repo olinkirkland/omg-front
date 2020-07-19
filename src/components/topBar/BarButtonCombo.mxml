@@ -9,6 +9,9 @@
         [Bindable]
         public var items:Array;
 
+        [Bindable]
+        public var rightAlign:Boolean;
+
         private function onComplete(event:FlexEvent):void
         {
             button.addEventListener(MouseEvent.MOUSE_OVER, onOver);
@@ -28,8 +31,8 @@
         {
             button.onOver();
             menu.show();
-            if (localToGlobal(new Point(menu.x + menu.contentGroup.width, 0)).x > stage.stageWidth)
-                menu.x = globalToLocal(new Point(stage.stageWidth - menu.contentGroup.width, 0)).x;
+            if (rightAlign)
+                menu.x = button.width - menu.contentGroup.width;
         }
 
         private function onOut(event:MouseEvent):void
