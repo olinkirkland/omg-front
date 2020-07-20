@@ -32,12 +32,6 @@
                 inputEmail.setFocus();
             }, 200);
 
-            // Add Listeners
-            buttonLogin.addEventListener(MouseEvent.CLICK, onButtonLogin);
-            buttonForgotPassword.addEventListener(MouseEvent.CLICK, onForgotPassword);
-            buttonSwitchToRegister.addEventListener(MouseEvent.CLICK, onButtonSwitchToRegister);
-            closeButton.addEventListener(MouseEvent.CLICK, onButtonClose);
-
             inputEmail.addEventListener(KeyboardEvent.KEY_DOWN, updateLoginButton);
             inputEmail.addEventListener(KeyboardEvent.KEY_UP, updateLoginButton);
             inputPassword.addEventListener(KeyboardEvent.KEY_DOWN, updateLoginButton);
@@ -48,9 +42,6 @@
 
         override public function handleSignal(signalEvent:SignalEvent):void
         {
-            // Handle global Signals
-            var payload:Object = signalEvent.payload;
-
             // Client action
             switch (signalEvent.action)
             {
@@ -68,10 +59,6 @@
         override public function dispose():void
         {
             super.dispose();
-
-            // Remove listeners
-            closeButton.removeEventListener(MouseEvent.CLICK, onButtonClose);
-            buttonSwitchToRegister.removeEventListener(MouseEvent.CLICK, onButtonSwitchToRegister);
         }
 
         private function updateLoginButton(event:Event):void
@@ -82,7 +69,7 @@
             });
         }
 
-        private function onButtonLogin(event:MouseEvent):void
+        private function onClickLogin(event:MouseEvent):void
         {
             signalManager.dispatch(ClientMessageType.LOGIN,
                     {
@@ -94,7 +81,7 @@
             content.enabled = false;
         }
 
-        private function onForgotPassword(event:MouseEvent):void
+        private function onClickForgotPassword(event:MouseEvent):void
         {
             // todo open reset password popup
         }
@@ -104,7 +91,7 @@
             end();
         }
 
-        private function onButtonSwitchToRegister(event:MouseEvent):void
+        private function onClickSwitchToRegister(event:MouseEvent):void
         {
             signalManager.dispatch(SignalType.START_POPUP, {id: PopupType.REGISTER});
             end();
@@ -121,7 +108,8 @@
         <s:HGroup width="100%">
             <s:Spacer width="100%" />
             <s:VGroup padding="5">
-                <components:CloseButton id="closeButton" />
+                <components:CloseButton id="closeButton"
+                                        click="onButtonClose(event)" />
             </s:VGroup>
         </s:HGroup>
 
@@ -176,7 +164,8 @@
 
                     <s:Button id="buttonLogin"
                               label="{LanguageManager.getText('buttonLogin').toUpperCase()}"
-                              skinClass="skins.buttons.PrimaryButtonSkin" />
+                              skinClass="skins.buttons.PrimaryButtonSkin"
+                              click="onClickLogin(event)" />
                 </s:HGroup>
 
                 <s:Spacer height="5" />
@@ -197,12 +186,14 @@
 
                     <s:Button id="buttonForgotPassword"
                               label="{LanguageManager.getText('buttonForgotPassword').toUpperCase()}"
-                              visible="false" />
+                              visible="false"
+                              click="onClickForgotPassword(event)" />
                     <s:Spacer width="100%" />
                     <s:Label id="labelSwitchToRegister"
                              text="{LanguageManager.getText('labelSwitchToRegister')}" />
                     <s:Button id="buttonSwitchToRegister"
-                              label="{LanguageManager.getText('buttonSwitchToRegister').toUpperCase()}" />
+                              label="{LanguageManager.getText('buttonSwitchToRegister').toUpperCase()}"
+                              click="onClickSwitchToRegister(event)" />
 
                 </s:HGroup>
 

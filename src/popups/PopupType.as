@@ -12,5 +12,6 @@ package popups
         public static const ERROR:String        = "error";
         public static const VERIFY_EMAIL:String = "verifyEmail";
         public static const CHOOSE_NAME:String  = "chooseName";
+        public static const INPUT_TEXT:String   = "inputText";
     }
 }

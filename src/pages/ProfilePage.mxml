@@ -2,6 +2,7 @@
 <pages:Page xmlns:fx="http://ns.adobe.com/mxml/2009"
             xmlns:s="library://ns.adobe.com/flex/spark"
             xmlns:pages="pages.*"
+            xmlns:components="components.*"
             creationComplete="onCreationComplete(event)"
             width="100%"
             height="100%">
@@ -16,8 +17,11 @@
 
         import net.Client;
 
+        import popups.PopupType;
+
         import signal.SignalEvent;
         import signal.SignalManager;
+        import signal.SignalType;
 
         private var dataManager:DataManager;
         private var user:User;
@@ -41,15 +45,43 @@
         {
             this.user = user;
 
-            isMe = user.id == Client.id;
+            // Is it my profile?
+            isMe                                 = user.id == Client.id;
+            editAboutTitleButton.includeInLayout = editAboutTitleButton.visible = isMe;
+            editAboutBodyButton.includeInLayout  = editAboutBodyButton.visible = isMe;
 
             // Profile Column (left)
             nameLabel.text             = user.name;
             shortDescriptionLabel.text = LanguageManager.getText("labelLevel") + " " + user.level + " // " + user.aboutTitle;
+            badge.level                = user.level;
+            badge.experiencePercent    = user.experience / user.levelExperience;
 
             // Overview (right)
             aboutTitleLabel.text = user.aboutTitle;
             aboutBodyLabel.text  = user.aboutBody;
+        }
+
+        private function onClickAboutTitleButton(event:MouseEvent):void
+        {
+            signalManager.dispatch(SignalType.START_POPUP, {
+                id:            PopupType.INPUT_TEXT,
+                maxChars:      100,
+                input:         user.aboutTitle,
+                title:         LanguageManager.getText("updateAboutMeTitle"),
+                inputText:     LanguageManager.getText("aboutMeTitle"),
+                preventBreaks: true
+            });
+        }
+
+        private function onClickAboutBodyButton(event:MouseEvent):void
+        {
+            signalManager.dispatch(SignalType.START_POPUP, {
+                id:        PopupType.INPUT_TEXT,
+                maxChars:  800,
+                input:     user.aboutBody,
+                title:     LanguageManager.getText("updateAboutMeBody"),
+                inputText: LanguageManager.getText("aboutMeBody")
+            });
         }
 
         override public function handleSignal(signalEvent:SignalEvent):void
@@ -73,7 +105,46 @@
                   height="200"
                   gap="9">
 
-            <s:Group width="200"
+            <s:Group width="400"
+                     height="100%"
+                     depth="99">
+
+                <s:Panel width="100%"
+                         height="100%" />
+
+                <s:VGroup width="100%"
+                          height="100%"
+                          padding="12"
+                          gap="3">
+
+                    <s:HGroup width="100%"
+                              gap="35">
+
+                        <s:Group width="100%">
+
+                            <s:VGroup width="100%">
+
+                                <s:Label id="nameLabel"
+                                         width="100%"
+                                         fontSize="36"
+                                         fontWeight="bold"
+                                         maxDisplayedLines="2"
+                                         showTruncationTip="true" />
+
+                                <s:Label id="shortDescriptionLabel"
+                                         width="100%" />
+
+                            </s:VGroup>
+
+                        </s:Group>
+
+                        <components:Badge id="badge" />
+
+                    </s:HGroup>
+                </s:VGroup>
+            </s:Group>
+
+            <s:Group width="400"
                      height="100%">
 
                 <s:Panel width="100%"
@@ -84,28 +155,32 @@
                           padding="12"
                           gap="3">
 
-                    <s:HGroup width="100%">
+                    <s:VGroup width="100%">
 
-                        <s:VGroup width="100%">
-
-                            <s:Label id="nameLabel"
+                        <s:HGroup width="100%"
+                                  horizontalAlign="right">
+                            <s:Label id="aboutTitleLabel"
                                      width="100%"
-                                     fontSize="36"
+                                     fontSize="24"
                                      fontWeight="bold"
-                                     maxDisplayedLines="2"
-                                     showTruncationTip="true" />
+                                     text="?" />
+                            <s:Button id="editAboutTitleButton"
+                                      label="{LanguageManager.getText('buttonEdit')}"
+                                      click="onClickAboutTitleButton(event)" />
+                        </s:HGroup>
 
-                            <s:Label id="shortDescriptionLabel"
-                                     width="100%" />
+                        <s:HGroup width="100%"
+                                  horizontalAlign="right">
+                            <s:Label id="aboutBodyLabel"
+                                     width="100%"
+                                     text="?" />
+                            <s:Button id="editAboutBodyButton"
+                                      label="{LanguageManager.getText('buttonEdit')}"
+                                      click="onClickAboutBodyButton(event)" />
+                        </s:HGroup>
 
-                        </s:VGroup>
-
-                        <!--Todo: Level/Experience badge-->
-
-                    </s:HGroup>
-
+                    </s:VGroup>
                 </s:VGroup>
-
             </s:Group>
 
             <s:Group width="100%"
@@ -121,22 +196,10 @@
 
                     <s:VGroup width="100%">
 
-                        <s:Label id="aboutTitleLabel"
-                                 width="100%"
-                                 fontSize="24"
-                                 fontWeight="bold"
-                                 text="?" />
-
-                        <s:Label id="aboutBodyLabel"
-                                 width="100%"
-                                 text="?" />
-
                     </s:VGroup>
 
                 </s:VGroup>
-
             </s:Group>
-
         </s:HGroup>
 
         <s:Group width="100%"

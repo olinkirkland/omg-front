@@ -71,9 +71,7 @@
                 case PageType.PROFILE:
                     page = new ProfilePage();
                     browser.updateCard(LanguageManager.getText("cardProfile"));
-                    if (payload.id == -1)
-                        payload.id = Client.id;
-                    ProfilePage(page).load(payload.id as String);
+                    ProfilePage(page).load(payload.id == -1 ? Client.id : payload.id as String);
                     break;
             }
 

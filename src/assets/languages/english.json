@@ -43,5 +43,13 @@
   "labelMyProfile": "My Profile",
   "labelLevel": "Level",
   "cardHome": "home",
-  "cardProfile": "people"
+  "cardProfile": "people",
+  "buttonEdit": "Edit",
+  "buttonSave": "Save",
+  "labelInputTextTitle": "Edit Text",
+  "labelInputText": "Text",
+  "aboutMeTitle": "Status",
+  "updateAboutMeTitle": "Update Status",
+  "aboutMeBody": "About Me",
+  "updateAboutMeBody": "Update About Me"
 }

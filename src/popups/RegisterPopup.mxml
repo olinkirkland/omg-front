@@ -116,9 +116,6 @@
 
         override public function handleSignal(signalEvent:SignalEvent):void
         {
-            // Handle global Signals
-            var payload:Object = signalEvent.payload;
-
             // Client action
             switch (signalEvent.action)
             {

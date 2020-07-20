@@ -7,7 +7,7 @@ package popups
         {
         }
 
-        public static function makePopup(id: String): BasePopup
+        public static function makePopup(id:String):BasePopup
         {
             // Return a Popup
             switch (id)
@@ -35,6 +35,9 @@ package popups
                     break;
                 case PopupType.CHOOSE_NAME:
                     return new ChooseNamePopup();
+                    break;
+                case PopupType.INPUT_TEXT:
+                    return new InputTextPopup();
                     break;
                 default:
                     return null;

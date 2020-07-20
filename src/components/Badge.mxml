@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<mx:UIComponent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                styleName="LogoComponent"
+                initialize="onInitialize(event)"
+                creationComplete="onCreationComplete(event)">
+
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+
+        private var nested:Asset_Badge;
+
+        private var _level:int;
+        private var _experiencePercent:Number;
+
+        private function onInitialize(event:FlexEvent):void
+        {
+            nested = new Asset_Badge();
+        }
+
+        private function onCreationComplete(event:FlexEvent):void
+        {
+            addChild(nested);
+            invalidateSize();
+
+            nested.badge.content.txtLevel.text = "" + _level;
+            nested.badge.content.bar.scaleX    = _experiencePercent;
+        }
+
+        public function set level(value:Number):void
+        {
+            _level = value;
+
+            if (nested)
+                nested.badge.content.txtLevel.text = _level;
+        }
+
+        public function set experiencePercent(value:Number):void
+        {
+            _experiencePercent = value;
+
+            if (nested)
+                nested.badge.content.bar.scaleX = _experiencePercent;
+        }
+
+        override public function get width():Number
+        {
+            return nested.sizer.width;
+        }
+
+        override public function get height():Number
+        {
+            return nested.sizer.height;
+        }
+        ]]>
+    </fx:Script>
+</mx:UIComponent>

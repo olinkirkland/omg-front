@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<popups:BasePopup xmlns:fx="http://ns.adobe.com/mxml/2009"
+                  xmlns:s="library://ns.adobe.com/flex/spark"
+                  xmlns:popups="popups.*"
+                  xmlns:components="components.*"
+                  creationComplete="onCreationComplete(event)">
+
+    <fx:Script>
+        <![CDATA[
+        import managers.LanguageManager;
+
+        import mx.events.FlexEvent;
+
+        import spark.events.TextOperationEvent;
+
+        private var valid:Boolean;
+
+        private function onCreationComplete(event:FlexEvent):void
+        {
+            // Add Listeners
+            saveButton.addEventListener(MouseEvent.CLICK, onClickApply);
+
+            inputText.addEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
+            inputText.addEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
+
+            updateSubmitButton(null);
+
+            if (!payload)
+                return;
+
+            if (payload.title)
+                titleLabel.text = payload.title;
+
+            if (payload.inputText)
+                labelInputText.text = payload.inputText;
+
+            inputText.text = payload.input;
+
+            if (payload.maxChars)
+            {
+                inputText.maxChars = payload.maxChars;
+                updateMaxCharsLabel();
+            }
+        }
+
+        override public function dispose():void
+        {
+            super.dispose();
+
+            // Remove listeners
+            saveButton.removeEventListener(MouseEvent.CLICK, onClickApply);
+
+            inputText.removeEventListener(KeyboardEvent.KEY_DOWN, updateSubmitButton);
+            inputText.removeEventListener(KeyboardEvent.KEY_UP, updateSubmitButton);
+        }
+
+        private function onClickApply(event:MouseEvent):void
+        {
+            //
+        }
+
+        private function updateSubmitButton(event:Event):void
+        {
+            callLater(function ():void
+            {
+                valid = saveButton.enabled = inputText.text.length != 0;
+            });
+        }
+
+        private function onButtonClose(event:MouseEvent):void
+        {
+            end();
+        }
+
+        private function onInputTextChange(event:TextOperationEvent):void
+        {
+            if (payload.preventBreaks)
+                inputText.text = inputText.text.replace(/[\n\r]+/g, "");
+
+            updateMaxCharsLabel();
+        }
+
+        private function updateMaxCharsLabel():void
+        {
+            maxCharsLabel.text = inputText.text.length + "/" + inputText.maxChars;
+        }
+        ]]>
+    </fx:Script>
+
+    <s:Panel skinClass="skins.PanelSkin"
+             width="600"
+             minHeight="60"
+             maxHeight="600">
+
+        <s:BitmapImage id="bitmapImage"
+                       smooth="true"
+                       smoothingQuality="high" />
+
+        <s:VGroup id="content"
+                  width="100%"
+                  height="100%"
+                  gap="0">
+
+            <s:Panel skinClass="skins.NestedPanelSkin"
+                     width="100%">
+                <s:HGroup width="100%"
+                          gap="10"
+                          padding="5">
+                    <s:HGroup width="100%"
+                              padding="10">
+                        <s:Label id="titleLabel"
+                                 text="{LanguageManager.getText('labelInputTextTitle')}"
+                                 fontSize="20"
+                                 fontWeight="bold"
+                                 width="100%" />
+                    </s:HGroup>
+                </s:HGroup>
+            </s:Panel>
+            <s:VGroup width="100%"
+                      height="100%"
+                      padding="10"
+                      horizontalAlign="center">
+                <s:Label id="labelInputText"
+                         width="100%"
+                         text="{LanguageManager.getText('labelInputText')}" />
+                <s:TextArea id="inputText"
+                            width="100%"
+                            height="140"
+                            change="onInputTextChange(event)" />
+                <s:HGroup width="100%"
+                          horizontalAlign="right">
+                    <s:Label id="maxCharsLabel"
+                             fontSize="10" />
+                </s:HGroup>
+            </s:VGroup>
+            <s:Panel width="100%"
+                     height="60"
+                     skinClass="skins.NestedPanelSkin">
+
+                <s:HGroup width="100%"
+                          height="100%"
+                          verticalAlign="middle"
+                          verticalCenter="0"
+                          padding="15">
+                    <s:Spacer width="100%" />
+                    <s:Button id="saveButton"
+                              label="{LanguageManager.getText('buttonSave')}"
+                              skinClass="skins.buttons.PrimaryButtonSkin" />
+                </s:HGroup>
+
+            </s:Panel>
+        </s:VGroup>
+
+        <s:HGroup width="100%">
+            <s:Spacer width="100%" />
+            <s:VGroup padding="5">
+                <components:CloseButton id="closeButton"
+                                        click="onButtonClose(event)" />
+            </s:VGroup>
+        </s:HGroup>
+
+    </s:Panel>
+
+</popups:BasePopup>

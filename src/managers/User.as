@@ -13,6 +13,7 @@ package managers
         public var coins:int;
         public var experience:int;
         public var level:int;
+        public var levelExperience:int;
 
         public function User()
         {
@@ -20,15 +21,16 @@ package managers
 
         public static function serialize(untypedUser:Object):User
         {
-            var user:User   = new User();
-            user.id         = untypedUser.id;
-            user.email      = untypedUser.email;
-            user.name       = untypedUser.name;
-            user.aboutTitle = untypedUser.aboutTitle;
-            user.aboutBody  = untypedUser.aboutBody;
-            user.coins      = untypedUser.coins;
-            user.experience = untypedUser.experience;
-            user.level      = untypedUser.level;
+            var user:User        = new User();
+            user.id              = untypedUser.id;
+            user.email           = untypedUser.email;
+            user.name            = untypedUser.name;
+            user.aboutTitle      = untypedUser.aboutTitle;
+            user.aboutBody       = untypedUser.aboutBody;
+            user.coins           = untypedUser.coins;
+            user.experience      = untypedUser.experience;
+            user.level           = untypedUser.level;
+            user.levelExperience = untypedUser.levelExperience;
 
             return user;
         }

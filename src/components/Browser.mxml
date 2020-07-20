@@ -184,7 +184,7 @@
             switch (signalEvent.action)
             {
                 case SignalType.START_POPUP:
-                    startPopup(payload.id, payload.payload);
+                    startPopup(payload.id, payload);
                     break;
                 case SignalType.END_POPUP:
                     if (popup)
