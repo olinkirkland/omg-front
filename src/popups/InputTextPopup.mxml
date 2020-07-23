@@ -14,6 +14,7 @@
         import spark.events.TextOperationEvent;
 
         private var valid:Boolean;
+        private var callback:Function;
 
         private function onCreationComplete(event:FlexEvent):void
         {
@@ -41,6 +42,9 @@
                 inputText.maxChars = payload.maxChars;
                 updateMaxCharsLabel();
             }
+
+            if (payload.callback)
+                this.callback = payload.callback;
         }
 
         override public function dispose():void
@@ -56,7 +60,9 @@
 
         private function onClickApply(event:MouseEvent):void
         {
-            //
+            if (callback != null)
+                callback.apply(null, [inputText.text]);
+            end();
         }
 
         private function updateSubmitButton(event:Event):void

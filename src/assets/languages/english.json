@@ -25,7 +25,6 @@
   "labelHighResolutionWallpapersDescription": "Use awesome 4K wallpapers instead of 1080p.\nThese might make the platform run a little slower on some machines.",
   "buttonApplySettings": "Apply Settings",
   "labelConfirmPasswordError": "Password fields must be the same.",
-  "messageLoggingIn": "Almost there!",
   "labelErrorTitle": "Uh oh!",
   "labelVerifyEmailTitle": "Verification code",
   "labelVerifyEmailBody": "For verification purposes, a code has been sent to %EMAIL% and should arrive momentarily. Please check your email and enter the code in the field below.",

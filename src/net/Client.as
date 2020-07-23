@@ -7,7 +7,11 @@ package net
 
     import global.Util;
 
+    import managers.LanguageManager;
+
     import managers.SettingsManager;
+
+    import popups.PopupType;
 
     import signal.SignalEvent;
     import signal.SignalManager;
@@ -92,6 +96,9 @@ package net
                     logout();
                     break;
                 case ClientMessageType.REQUEST_USER_DATA:
+                    send(new Message(signalEvent.action, payload));
+                    break;
+                case ClientMessageType.UPDATE_USER_DATA:
                     send(new Message(signalEvent.action, payload));
                     break;
                 default:

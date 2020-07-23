@@ -6,13 +6,14 @@ package net
         Client -> Server
          */
 
-        public static var REQUEST_USER_DATA:String  = "requestUserData";
-        public static var REGISTER:String           = "register";
-        public static var LOGIN:String              = "login";
-        public static var LOGOUT:String             = "logout";
-        public static var RESEND_VERIFY_CODE:String = "resendVerifyCode";
-        public static var SUBMIT_VERIFY_CODE:String = "submitVerifyCode";
-        public static var CHOOSE_NAME:String        = "chooseName";
-        public static var CONFIRM_CONNECTION:String = "confirmConnection";
+        public static const REQUEST_USER_DATA:String  = "requestUserData";
+        public static const UPDATE_USER_DATA:String   = "updateUserData";
+        public static const REGISTER:String           = "register";
+        public static const LOGIN:String              = "login";
+        public static const LOGOUT:String             = "logout";
+        public static const RESEND_VERIFY_CODE:String = "resendVerifyCode";
+        public static const SUBMIT_VERIFY_CODE:String = "submitVerifyCode";
+        public static const CHOOSE_NAME:String        = "chooseName";
+        public static const CONFIRM_CONNECTION:String = "confirmConnection";
     }
 }

@@ -234,6 +234,8 @@
             {
                 // Populate player card
                 dataManager.requestUser(Client.id, onGetUserMe);
+
+                buttonNameCard.text = "";
             }
         }
 

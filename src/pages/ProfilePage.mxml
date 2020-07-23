@@ -16,6 +16,8 @@
         import mx.events.FlexEvent;
 
         import net.Client;
+        import net.ClientMessageType;
+        import net.ServerMessageType;
 
         import popups.PopupType;
 
@@ -63,7 +65,8 @@
             aboutBodyLabel.text  = user.aboutBody;
 
             visible = true;
-            signalManager.dispatch(SignalType.END_POPUP, {});
+
+            SignalManager.getInstance().dispatch(SignalType.END_POPUP, {});
         }
 
         private function onClickAboutTitleButton(event:MouseEvent):void
@@ -74,8 +77,14 @@
                 input:         user.aboutTitle,
                 title:         LanguageManager.getText("updateAboutMeTitle"),
                 inputText:     LanguageManager.getText("aboutMeTitle"),
-                preventBreaks: true
+                preventBreaks: true,
+                callback:      onAboutMeTitleChanged
             });
+        }
+
+        private function onAboutMeTitleChanged(value:String):void
+        {
+            signalManager.dispatch(ClientMessageType.UPDATE_USER_DATA, {id: "aboutTitle", value: value})
         }
 
         private function onClickAboutBodyButton(event:MouseEvent):void
@@ -85,13 +94,21 @@
                 maxChars:  800,
                 input:     user.aboutBody,
                 title:     LanguageManager.getText("updateAboutMeBody"),
-                inputText: LanguageManager.getText("aboutMeBody")
+                inputText: LanguageManager.getText("aboutMeBody"),
+                callback:  onAboutMeBodyChanged
             });
+        }
+
+        private function onAboutMeBodyChanged(value:String):void
+        {
+            signalManager.dispatch(ClientMessageType.UPDATE_USER_DATA, {id: "aboutBody", value: value})
         }
 
         override public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
+            if (signalEvent.action == ServerMessageType.USER_DATA && signalEvent.payload.id == user.id)
+                onGetUser(User.serialize(signalEvent.payload));
         }
 
         override public function dispose():void
@@ -160,31 +177,36 @@
                           padding="12"
                           gap="3">
 
-                    <s:VGroup width="100%">
+                    <s:Scroller width="100%"
+                                height="100%">
 
-                        <s:HGroup width="100%"
-                                  horizontalAlign="right">
-                            <s:Label id="aboutTitleLabel"
-                                     width="100%"
-                                     fontSize="24"
-                                     fontWeight="bold"
-                                     text="?" />
-                            <s:Button id="editAboutTitleButton"
-                                      label="{LanguageManager.getText('buttonEdit')}"
-                                      click="onClickAboutTitleButton(event)" />
-                        </s:HGroup>
+                        <s:VGroup width="100%">
 
-                        <s:HGroup width="100%"
-                                  horizontalAlign="right">
-                            <s:Label id="aboutBodyLabel"
-                                     width="100%"
-                                     text="?" />
-                            <s:Button id="editAboutBodyButton"
-                                      label="{LanguageManager.getText('buttonEdit')}"
-                                      click="onClickAboutBodyButton(event)" />
-                        </s:HGroup>
+                            <s:HGroup width="100%"
+                                      horizontalAlign="right">
+                                <s:Label id="aboutTitleLabel"
+                                         width="100%"
+                                         fontSize="24"
+                                         fontWeight="bold"
+                                         text="?" />
+                                <s:Button id="editAboutTitleButton"
+                                          label="{LanguageManager.getText('buttonEdit')}"
+                                          click="onClickAboutTitleButton(event)" />
+                            </s:HGroup>
 
-                    </s:VGroup>
+                            <s:HGroup width="100%"
+                                      horizontalAlign="right">
+                                <s:Label id="aboutBodyLabel"
+                                         width="100%"
+                                         text="?" />
+                                <s:Button id="editAboutBodyButton"
+                                          label="{LanguageManager.getText('buttonEdit')}"
+                                          click="onClickAboutBodyButton(event)" />
+                            </s:HGroup>
+
+                        </s:VGroup>
+
+                    </s:Scroller>
                 </s:VGroup>
             </s:Group>
 
