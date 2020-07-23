@@ -51,5 +51,9 @@
   "aboutMeTitle": "Status",
   "updateAboutMeTitle": "Update Status",
   "aboutMeBody": "About Me",
-  "updateAboutMeBody": "Update About Me"
+  "updateAboutMeBody": "Update About Me",
+  "loadingConnecting": "Connecting",
+  "loadingLoggingIn": "Logging in",
+  "loadingLoggingOut": "Logging out",
+  "loading": "Loading"
 }

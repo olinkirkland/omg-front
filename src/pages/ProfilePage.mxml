@@ -37,6 +37,8 @@
 
         public function load(id:String):void
         {
+            SignalManager.getInstance().dispatch(SignalType.START_POPUP, {id: PopupType.LOADING, text: LanguageManager.getText("loading")});
+            visible     = false;
             dataManager = DataManager.getInstance();
             dataManager.requestUser(id, onGetUser);
         }
@@ -59,6 +61,9 @@
             // Overview (right)
             aboutTitleLabel.text = user.aboutTitle;
             aboutBodyLabel.text  = user.aboutBody;
+
+            visible = true;
+            signalManager.dispatch(SignalType.END_POPUP, {});
         }
 
         private function onClickAboutTitleButton(event:MouseEvent):void

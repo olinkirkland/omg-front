@@ -76,6 +76,8 @@
         {
             if (payload.preventBreaks)
                 inputText.text = inputText.text.replace(/[\n\r]+/g, "");
+            if (inputText.text.length > inputText.maxChars)
+                inputText.text = inputText.text.substr(0, inputText.maxChars);
 
             updateMaxCharsLabel();
         }

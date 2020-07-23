@@ -7,7 +7,7 @@
 
     <fx:Script>
         <![CDATA[
-        import components.IndefiniteLoadingAnimation;
+        import components.MiniProgressBar;
 
         import global.Util;
 
@@ -16,7 +16,7 @@
 
         import signal.SignalEvent;
 
-        private var loadingAnimation:IndefiniteLoadingAnimation;
+        private var loadingAnimation:MiniProgressBar;
         private var dataProvider:ArrayCollection;
 
         private function onCreationComplete(event:FlexEvent):void
@@ -27,7 +27,7 @@
             //signalManager.dispatch({send: {request: {category: "paper", id: data}}});
 
             // Show loading
-            loadingAnimation = new IndefiniteLoadingAnimation();
+            loadingAnimation = new MiniProgressBar();
             loadingAnimationContainer.addElement(loadingAnimation);
 
             // Add Listeners

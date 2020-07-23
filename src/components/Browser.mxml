@@ -25,6 +25,7 @@
         import pages.PageType;
 
         import popups.BasePopup;
+        import popups.LoadingPopup;
         import popups.PopupFactory;
         import popups.PopupType;
 
@@ -109,8 +110,8 @@
             invalidateParentSizeAndDisplayList();
 
             // Startup
-            startPopup(PopupType.LOADING);
-            setTimeout(client.create, 1000);
+            startPopup(PopupType.LOADING, {text: LanguageManager.getText("loadingConnecting")});
+            setTimeout(client.create, 200);
 
             // Initially, Open the Splash page
             signalManager.dispatch(SignalType.LOAD_PAGE, {type: PageType.SPLASH});
@@ -125,7 +126,7 @@
 
         private function onDisconnect(event:Event):void
         {
-            startPopup(PopupType.LOADING);
+            startPopup(PopupType.LOADING, {text: LanguageManager.getText("loadingConnecting")});
         }
 
         private function startPopup(id:String, payload:Object = null):void
@@ -187,18 +188,17 @@
                     startPopup(payload.id, payload);
                     break;
                 case SignalType.END_POPUP:
-                    if (popup)
-                        popup.end();
+                    if (popup) popup.end();
                     break;
                 case ServerMessageType.LOGIN_SUCCESS:
-                    if (popup)
-                        popup.end();
+                    startPopup(PopupType.LOADING, {text: LanguageManager.getText("loadingLoggingIn")});
                     callLater(update);
                     break;
                 case ServerMessageType.LOGOUT_FAIL:
                     startPopup(PopupType.ERROR, "labelLogoutFail");
                     break;
                 case ServerMessageType.LOGOUT_SUCCESS:
+                    if (popup is LoadingPopup) popup.end();
                     callLater(update);
                     break;
                 case ServerMessageType.USER_NOT_VERIFIED:
@@ -208,11 +208,11 @@
                     startPopup(PopupType.CHOOSE_NAME);
                     break;
                 case ServerMessageType.CHOOSE_NAME_SUCCESS:
-                    if (popup)
-                        popup.end();
+                    if (popup) popup.end();
                     callLater(update);
                     break;
                 case ClientMessageType.LOGOUT:
+                    startPopup(PopupType.LOADING, {text: LanguageManager.getText("loadingLoggingOut")});
                     callLater(update);
                     break;
             }
@@ -228,7 +228,7 @@
         {
             // Make sure the right stuff is visible
             guestGroup.visible   = guestGroup.includeInLayout = !client.isLoggedIn;
-            profileGroup.visible = profileGroup.includeInLayout = client.isLoggedIn;
+            profileGroup.visible = profileGroup.includeInLayout = !guestGroup.visible;
 
             if (client.isLoggedIn)
             {
@@ -239,7 +239,20 @@
 
         private function onGetUserMe(me:User):void
         {
+            if (popup is LoadingPopup)
+                popup.end();
+
+            clearQueuedPopup();
+
             buttonNameCard.text = me.name;
+        }
+
+        public function clearQueuedPopup():void
+        {
+            if (popup)
+                popup.end();
+            queuedPopupId      = null;
+            queuedPopupPayload = null;
         }
         ]]>
     </fx:Script>

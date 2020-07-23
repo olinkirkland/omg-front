@@ -133,7 +133,7 @@ package net
                 setTimeout(function ():void
                 {
                     rawLogin(settingsManager.settings.rememberLogin.email, settingsManager.settings.rememberLogin.password);
-                }, 250);
+                }, 200);
             }
         }
 

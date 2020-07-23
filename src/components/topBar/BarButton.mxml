@@ -9,7 +9,7 @@
         import mx.events.FlexEvent;
 
         private var nested:Asset_BarButton;
-        private var _text:String       = "[?]";
+        private var _text:String       = "";
         private var fixedWidth:Boolean = false;
 
         private function onInitialize(event:FlexEvent):void

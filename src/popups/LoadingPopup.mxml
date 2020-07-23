@@ -4,30 +4,40 @@
                   xmlns:popups="popups.*"
                   xmlns:components="components.*"
                   creationComplete="onCreationComplete(event)">
-    
+
     <fx:Script>
         <![CDATA[
+        import global.Color;
+
         import mx.events.FlexEvent;
-        
-        private function onCreationComplete(event: FlexEvent): void
+
+        private function onCreationComplete(event:FlexEvent):void
         {
+            loadingLabel.includeInLayout = loadingLabel.visible = payload;
+            loadingLabel.text            = payload.text as String;
         }
         ]]>
     </fx:Script>
-    
-    <s:Panel skinClass="skins.PanelSkin">
-        
+
+    <s:Panel skinClass="skins.LoadingPanelSkin">
+
         <s:BitmapImage id="bitmapImage"
                        smooth="true"
                        smoothingQuality="high" />
-        
+
         <s:VGroup id="content"
-                  width="100%"
+                  width="240"
                   horizontalAlign="center"
-                  padding="4">
-            <components:IndefiniteLoadingAnimation />
+                  padding="20"
+                  gap="10">
+            <s:Spacer height="40" />
+            <s:Label id="loadingLabel"
+                     text="Connecting"
+                     color="{Color.white}" />
+            <components:MiniProgressBarDark />
+            <s:Spacer height="40" />
         </s:VGroup>
-    
+
     </s:Panel>
 
 </popups:BasePopup>
