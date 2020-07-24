@@ -83,6 +83,12 @@
             buttonLogin.label                 = LanguageManager.getText("buttonLogin").toUpperCase();
             buttonRegister.label              = LanguageManager.getText("buttonRegister").toUpperCase();
             buttonSettings.iconDisplay.source = new Util.ICON_SETTINGS();
+            buttonFriends.iconDisplay.source  = new Util.ICON_FRIENDS();
+
+            buttonFriends.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
+            {
+                // todo open friends list
+            });
 
             buttonNameCard.button.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
             {
@@ -252,6 +258,7 @@
                 popup.end();
 
             buttonNameCard.label = me.name;
+            buttonFriends.label  = "" + me.friends.length;
         }
 
         public function clearQueuedPopup():void
@@ -380,6 +387,9 @@
 
                     <s:Spacer width="100%" />
 
+                    <components:BarDivider />
+                    <s:Button id="buttonFriends"
+                              skinClass="skins.buttons.BarButtonBoldSkin" />
                     <components:BarDivider />
                     <s:Button id="buttonSettings"
                               skinClass="skins.buttons.BarButtonSkin" />

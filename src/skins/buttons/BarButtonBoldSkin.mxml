@@ -67,7 +67,8 @@
                            height="20"
                            smooth="true" />
 
-            <s:Label id="labelDisplay" />
+            <s:Label id="labelDisplay"
+                     fontWeight="bold" />
 
         </s:HGroup>
 

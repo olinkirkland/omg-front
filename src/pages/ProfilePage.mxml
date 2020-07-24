@@ -62,11 +62,8 @@
                 // This user does not exist (or is hidden)
                 profileGroup.visible = profileGroup.enabled = false;
                 errorGroup.visible   = errorGroup.enabled = true;
-                trace("Hide user!");
                 return;
             }
-
-            trace("Show user!")
 
             userId = user.id;
 

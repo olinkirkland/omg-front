@@ -26,6 +26,9 @@ package global
         [Embed(source="/assets/icons/settings.png")]
         public static const ICON_SETTINGS:Class;
 
+        [Embed(source="/assets/icons/friends.png")]
+        public static const ICON_FRIENDS:Class;
+
         public static function local(url:String):String
         {
             return LOCAL_STORAGE_PATH + url;
