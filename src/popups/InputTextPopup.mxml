@@ -18,6 +18,12 @@
 
         private function onCreationComplete(event:FlexEvent):void
         {
+            setTimeout(function ():void
+            {
+                inputText.setFocus();
+                inputText.selectAll();
+            }, 200);
+
             // Add Listeners
             saveButton.addEventListener(MouseEvent.CLICK, onClickApply);
 

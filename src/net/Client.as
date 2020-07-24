@@ -25,9 +25,10 @@ package net
     public class Client extends EventDispatcher
     {
         private var socket:Socket;
-        public var connected:Boolean;
         private var settingsManager:SettingsManager;
         private var signalManager:SignalManager;
+
+        public var connected:Boolean;
         public var isLoggedIn:Boolean = false;
 
         // id refers to the id of the currently logged in user

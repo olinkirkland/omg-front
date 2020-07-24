@@ -199,6 +199,7 @@
                     break;
                 case ServerMessageType.LOGOUT_SUCCESS:
                     if (popup is LoadingPopup) popup.end();
+                    paneBase.loadPage(PageType.SPLASH);
                     callLater(update);
                     break;
                 case ServerMessageType.USER_NOT_VERIFIED:
@@ -244,15 +245,11 @@
             if (popup is LoadingPopup)
                 popup.end();
 
-            clearQueuedPopup();
-
             buttonNameCard.text = me.name;
         }
 
         public function clearQueuedPopup():void
         {
-            if (popup)
-                popup.end();
             queuedPopupId      = null;
             queuedPopupPayload = null;
         }
@@ -356,7 +353,8 @@
                   padding="15"
                   paddingTop="30"
                   depth="-1">
-            <panes:PaneBase width="100%"
+            <panes:PaneBase id="paneBase"
+                            width="100%"
                             height="100%"
                             browser="{this}" />
         </s:HGroup>

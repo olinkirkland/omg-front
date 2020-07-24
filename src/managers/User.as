@@ -15,6 +15,8 @@ package managers
         public var level:int;
         public var levelExperience:int;
 
+        public var friends:Array;
+
         public function User()
         {
         }
@@ -31,6 +33,7 @@ package managers
             user.experience      = untypedUser.experience;
             user.level           = untypedUser.level;
             user.levelExperience = untypedUser.levelExperience;
+            user.friends         = untypedUser.friends;
 
             return user;
         }

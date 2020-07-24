@@ -9,6 +9,8 @@
 
     <fx:Script>
     <![CDATA[
+        import global.Util;
+
         import managers.DataManager;
         import managers.LanguageManager;
         import managers.User;
@@ -26,7 +28,9 @@
         import signal.SignalType;
 
         private var dataManager:DataManager;
+
         private var user:User;
+        private var userId:String;
 
         private var isMe:Boolean = false;
 
@@ -39,18 +43,39 @@
 
         public function load(id:String):void
         {
+            visible = false;
             SignalManager.getInstance().dispatch(SignalType.START_POPUP, {id: PopupType.LOADING, text: LanguageManager.getText("loading")});
-            visible     = false;
+
             dataManager = DataManager.getInstance();
             dataManager.requestUser(id, onGetUser);
         }
 
         public function onGetUser(user:User):void
         {
+            visible = true;
+            SignalManager.getInstance().dispatch(SignalType.END_POPUP, {});
+
             this.user = user;
 
+            if (!user)
+            {
+                // This user does not exist (or is hidden)
+                profileGroup.visible = profileGroup.enabled = false;
+                errorGroup.visible   = errorGroup.enabled = true;
+                trace("Hide user!");
+                return;
+            }
+
+            trace("Show user!")
+
+            userId = user.id;
+
+            profileGroup.visible = profileGroup.enabled = true;
+            errorGroup.visible   = errorGroup.enabled = false;
+
             // Is it my profile?
-            isMe                                 = user.id == Client.id;
+            isMe = user.id == Client.id;
+
             editAboutTitleButton.includeInLayout = editAboutTitleButton.visible = isMe;
             editAboutBodyButton.includeInLayout  = editAboutBodyButton.visible = isMe;
 
@@ -63,10 +88,7 @@
             // Overview (right)
             aboutTitleLabel.text = user.aboutTitle;
             aboutBodyLabel.text  = user.aboutBody;
-
-            visible = true;
-
-            SignalManager.getInstance().dispatch(SignalType.END_POPUP, {});
+            aboutBodyLabel.text  = user.aboutBody;
         }
 
         private function onClickAboutTitleButton(event:MouseEvent):void
@@ -107,8 +129,18 @@
         override public function handleSignal(signalEvent:SignalEvent):void
         {
             // Handle global Signals
-            if (signalEvent.action == ServerMessageType.USER_DATA && signalEvent.payload.id == user.id)
-                onGetUser(User.serialize(signalEvent.payload));
+            switch (signalEvent.action)
+            {
+                case ServerMessageType.USER_DATA:
+                    if (user && signalEvent.payload && signalEvent.payload.id == user.id)
+                        onGetUser(User.serialize(signalEvent.payload));
+                    else
+                        onGetUser(null);
+                    break;
+                case ServerMessageType.LOGOUT_SUCCESS || ServerMessageType.LOGIN_SUCCESS:
+                    //load(userId);
+                    break;
+            }
         }
 
         override public function dispose():void
@@ -119,136 +151,156 @@
     </fx:Script>
 
 
-    <s:VGroup width="100%"
-              height="100%"
-              gap="9">
+    <s:Group width="100%"
+             height="100%">
 
-        <s:HGroup width="100%"
-                  height="200"
-                  gap="9">
-
-            <s:Group width="400"
-                     height="100%"
-                     depth="99">
-
-                <s:Panel width="100%"
-                         height="100%" />
-
-                <s:VGroup width="100%"
-                          height="100%"
-                          padding="12"
-                          gap="3">
-
-                    <s:HGroup width="100%"
-                              gap="35">
-
-                        <s:Group width="100%">
-
-                            <s:VGroup width="100%">
-
-                                <s:Label id="nameLabel"
-                                         width="100%"
-                                         fontSize="36"
-                                         fontWeight="bold"
-                                         maxDisplayedLines="2"
-                                         showTruncationTip="true" />
-
-                                <s:Label id="shortDescriptionLabel"
-                                         width="100%" />
-
-                            </s:VGroup>
-
-                        </s:Group>
-
-                        <components:Badge id="badge" />
-
-                    </s:HGroup>
-                </s:VGroup>
-            </s:Group>
-
-            <s:Group width="400"
-                     height="100%">
-
-                <s:Panel width="100%"
-                         height="100%" />
-
-                <s:VGroup width="100%"
-                          height="100%"
-                          padding="12"
-                          gap="3">
-
-                    <s:Scroller width="100%"
-                                height="100%">
-
-                        <s:VGroup width="100%">
-
-                            <s:HGroup width="100%"
-                                      horizontalAlign="right">
-                                <s:Label id="aboutTitleLabel"
-                                         width="100%"
-                                         fontSize="24"
-                                         fontWeight="bold"
-                                         text="?" />
-                                <s:Button id="editAboutTitleButton"
-                                          label="{LanguageManager.getText('buttonEdit')}"
-                                          click="onClickAboutTitleButton(event)" />
-                            </s:HGroup>
-
-                            <s:HGroup width="100%"
-                                      horizontalAlign="right">
-                                <s:Label id="aboutBodyLabel"
-                                         width="100%"
-                                         text="?" />
-                                <s:Button id="editAboutBodyButton"
-                                          label="{LanguageManager.getText('buttonEdit')}"
-                                          click="onClickAboutBodyButton(event)" />
-                            </s:HGroup>
-
-                        </s:VGroup>
-
-                    </s:Scroller>
-                </s:VGroup>
-            </s:Group>
-
-            <s:Group width="100%"
-                     height="100%">
-
-                <s:Panel width="100%"
-                         height="100%" />
-
-                <s:VGroup width="100%"
-                          height="100%"
-                          padding="12"
-                          gap="3">
-
-                    <s:VGroup width="100%">
-
-                    </s:VGroup>
-
-                </s:VGroup>
-            </s:Group>
-        </s:HGroup>
-
-        <s:Group width="100%"
+        <s:Group id="profileGroup"
+                 width="100%"
                  height="100%">
-
-            <s:Panel width="100%"
-                     height="100%" />
 
             <s:VGroup width="100%"
                       height="100%"
-                      padding="12"
-                      gap="3">
+                      gap="9">
 
-                <s:VGroup width="100%">
+                <s:HGroup width="100%"
+                          height="200"
+                          gap="9">
 
+                    <s:Group width="400"
+                             height="100%"
+                             depth="99">
 
-                </s:VGroup>
+                        <s:Panel width="100%"
+                                 height="100%" />
+
+                        <s:VGroup width="100%"
+                                  height="100%"
+                                  padding="12"
+                                  gap="3">
+
+                            <s:HGroup width="100%"
+                                      gap="35">
+
+                                <s:Group width="100%">
+
+                                    <s:VGroup width="100%">
+
+                                        <s:Label id="nameLabel"
+                                                 width="100%"
+                                                 fontSize="36"
+                                                 fontWeight="bold"
+                                                 maxDisplayedLines="2"
+                                                 showTruncationTip="true" />
+
+                                        <s:Label id="shortDescriptionLabel"
+                                                 width="100%" />
+
+                                    </s:VGroup>
+
+                                </s:Group>
+
+                                <components:Badge id="badge" />
+
+                            </s:HGroup>
+                        </s:VGroup>
+                    </s:Group>
+
+                    <s:Group width="550"
+                             height="100%">
+
+                        <s:Panel width="100%"
+                                 height="100%" />
+
+                        <s:VGroup width="100%"
+                                  height="100%"
+                                  padding="12"
+                                  gap="3">
+
+                            <s:Scroller width="100%"
+                                        height="100%">
+
+                                <s:VGroup width="100%">
+
+                                    <s:HGroup width="100%"
+                                              horizontalAlign="right">
+                                        <s:Label id="aboutTitleLabel"
+                                                 width="100%"
+                                                 fontSize="24"
+                                                 fontWeight="bold"
+                                                 text="?" />
+                                        <s:Button id="editAboutTitleButton"
+                                                  label="{LanguageManager.getText('buttonEdit')}"
+                                                  click="onClickAboutTitleButton(event)" />
+                                    </s:HGroup>
+
+                                    <s:HGroup width="100%"
+                                              horizontalAlign="right">
+                                        <s:Label id="aboutBodyLabel"
+                                                 width="100%"
+                                                 text="?" />
+                                        <s:Button id="editAboutBodyButton"
+                                                  label="{LanguageManager.getText('buttonEdit')}"
+                                                  click="onClickAboutBodyButton(event)" />
+                                    </s:HGroup>
+
+                                </s:VGroup>
+
+                            </s:Scroller>
+                        </s:VGroup>
+                    </s:Group>
+
+                </s:HGroup>
+
+                <s:Group width="100%"
+                         height="100%">
+
+                    <s:Panel width="100%"
+                             height="100%" />
+
+                    <s:VGroup width="100%"
+                              height="100%"
+                              padding="12"
+                              gap="3">
+
+                        <s:VGroup width="100%">
+                        </s:VGroup>
+
+                    </s:VGroup>
+                </s:Group>
 
             </s:VGroup>
 
         </s:Group>
 
-    </s:VGroup>
+
+        <s:VGroup id="errorGroup"
+                  width="100%"
+                  height="100%"
+                  horizontalAlign="center"
+                  verticalAlign="middle">
+
+            <s:Group>
+
+                <s:Panel width="100%"
+                         height="100%" />
+
+                <s:VGroup width="100%"
+                          height="100%"
+                          padding="30">
+
+                    <s:VGroup width="100%"
+                              height="100%"
+                              horizontalAlign="center"
+                              verticalAlign="middle">
+                        <s:Image source="{Util.ICON_FAIL}"
+                                 alpha=".3" />
+                        <s:Label text="{LanguageManager.getText('userNotFound')}" />
+                    </s:VGroup>
+
+                </s:VGroup>
+            </s:Group>
+        </s:VGroup>
+
+    </s:Group>
 
 </pages:Page>

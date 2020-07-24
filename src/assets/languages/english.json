@@ -17,6 +17,7 @@
   "buttonHome": "Home",
   "buttonSocial": "Social",
   "buttonChat": "Chat",
+  "buttonFriends": "Friends",
   "buttonSettings": "Settings",
   "labelSettings": "Settings",
   "labelHighQuality": "Anti-aliasing",
@@ -54,5 +55,6 @@
   "loadingConnecting": "Connecting",
   "loadingLoggingIn": "Logging in",
   "loadingLoggingOut": "Logging out",
-  "loading": "Loading"
+  "loading": "Loading",
+  "userNotFound": "This profile is hidden or doesn't exist."
 }

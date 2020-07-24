@@ -17,15 +17,18 @@ package global
 
     public class Util
     {
-        // Version
-        public static var VERSION:String;
-        public static var VERSION_ID:String;
-
         // Assets
         public static var LOCAL_STORAGE_PATH:String = "";
 
         // Server Address
         public static const ADDRESS:Object = {IP: "127.0.0.1", PORT: 43699};
+
+        /**
+         * Icons
+         */
+
+        [Embed(source="/assets/icons/fail.png")]
+        public static const ICON_FAIL:Class;
 
         public static function local(url:String):String
         {

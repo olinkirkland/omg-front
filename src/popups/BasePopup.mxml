@@ -18,6 +18,8 @@
         public var animating:Boolean = false;
         public var payload:Object;
 
+        private var ending:Boolean = false;
+
         protected var signalManager:SignalManager;
 
         private function onInitialize(event:FlexEvent):void
@@ -91,7 +93,12 @@
 
         public function end():void
         {
+            if (ending)
+                return;
+            ending = true;
+
             trace("popup.end: " + getQualifiedClassName(this));
+            //trace(JSON.stringify(payload));
             animationMode = true;
             TweenLite.killTweensOf(this);
 
