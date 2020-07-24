@@ -11,8 +11,9 @@
         <![CDATA[
         import com.greensock.TweenLite;
 
-        import managers.DataManager;
+        import global.Util;
 
+        import managers.DataManager;
         import managers.LanguageManager;
         import managers.User;
 
@@ -47,10 +48,10 @@
             client.addEventListener(Event.CLOSE, onDisconnect);
 
             buttonNameCard.items = [
-                {
-                    text:   LanguageManager.getText("labelMyProfile"),
-                    target: {action: SignalType.LOAD_PAGE, payload: {type: PageType.PROFILE, id: -1}}
-                },
+//                {
+//                    text:   LanguageManager.getText("labelMyProfile"),
+//                    target: {action: SignalType.LOAD_PAGE, payload: {type: PageType.PROFILE, id: -1}}
+//                },
                 {
                     text:   LanguageManager.getText("labelLogout"),
                     target: {action: ClientMessageType.LOGOUT}
@@ -77,11 +78,16 @@
             dataManager = DataManager.getInstance();
 
             // Text
-            buttonHome.text     = LanguageManager.getText("buttonHome").toUpperCase();
-            buttonSocial.text   = LanguageManager.getText("buttonSocial").toUpperCase();
-            buttonLogin.text    = LanguageManager.getText("buttonLogin").toUpperCase();
-            buttonRegister.text = LanguageManager.getText("buttonRegister").toUpperCase();
-            buttonSettings.text = LanguageManager.getText("buttonSettings").toUpperCase();
+            buttonHome.label                  = LanguageManager.getText("buttonHome").toUpperCase();
+            buttonSocial.label                = LanguageManager.getText("buttonSocial").toUpperCase();
+            buttonLogin.label                 = LanguageManager.getText("buttonLogin").toUpperCase();
+            buttonRegister.label              = LanguageManager.getText("buttonRegister").toUpperCase();
+            buttonSettings.iconDisplay.source = new Util.ICON_SETTINGS();
+
+            buttonNameCard.button.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
+            {
+                signalManager.dispatch(SignalType.LOAD_PAGE, {type: PageType.PROFILE, id: -1});
+            });
 
             // Event Listeners
             buttonLogin.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void
@@ -236,7 +242,7 @@
                 // Populate player card
                 dataManager.requestUser(Client.id, onGetUserMe);
 
-                buttonNameCard.text = "";
+                buttonNameCard.label = "";
             }
         }
 
@@ -245,7 +251,7 @@
             if (popup is LoadingPopup)
                 popup.end();
 
-            buttonNameCard.text = me.name;
+            buttonNameCard.label = me.name;
         }
 
         public function clearQueuedPopup():void
@@ -293,7 +299,8 @@
                     <s:HGroup gap="-1">
 
                         <components:BarDivider />
-                        <top:BarButton id="buttonHome" />
+                        <s:Button id="buttonHome"
+                                  skinClass="skins.buttons.BarButtonSkin" />
                         <components:BarDivider />
                         <top:BarButtonCombo id="buttonSocial" />
                         <components:BarDivider />
@@ -324,9 +331,11 @@
 
                         <s:Spacer width="40" />
                         <components:BarDivider />
-                        <top:BarButton id="buttonLogin" />
+                        <s:Button id="buttonLogin"
+                                  skinClass="skins.buttons.BarButtonSkin" />
                         <components:BarDivider />
-                        <top:BarButton id="buttonRegister" />
+                        <s:Button id="buttonRegister"
+                                  skinClass="skins.buttons.BarButtonSkin" />
 
                     </s:HGroup>
 
@@ -372,7 +381,8 @@
                     <s:Spacer width="100%" />
 
                     <components:BarDivider />
-                    <top:BarButton id="buttonSettings" />
+                    <s:Button id="buttonSettings"
+                              skinClass="skins.buttons.BarButtonSkin" />
 
                 </s:HGroup>
 

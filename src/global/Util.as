@@ -4,16 +4,9 @@ package global
     import com.hurlant.crypto.hash.SHA256;
     import com.hurlant.util.Hex;
 
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.geom.Matrix;
-    import flash.net.SharedObject;
-    import flash.net.URLRequest;
     import flash.utils.ByteArray;
 
     import managers.SettingsManager;
-
-    import mx.utils.UIDUtil;
 
     public class Util
     {
@@ -29,6 +22,9 @@ package global
 
         [Embed(source="/assets/icons/fail.png")]
         public static const ICON_FAIL:Class;
+
+        [Embed(source="/assets/icons/settings.png")]
+        public static const ICON_SETTINGS:Class;
 
         public static function local(url:String):String
         {

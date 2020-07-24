@@ -29,7 +29,6 @@
 
         private function onOver(event:MouseEvent):void
         {
-            button.onOver();
             menu.show();
             if (rightAlign)
                 menu.x = button.width - menu.contentGroup.width;
@@ -37,28 +36,18 @@
 
         private function onOut(event:MouseEvent):void
         {
-            button.onOut();
             menu.hide();
         }
 
-        public function set text(str:String):void
+        public function set label(str:String):void
         {
-            button.text = str;
-        }
-
-        override public function get measuredWidth():Number
-        {
-            return button.width;
-        }
-
-        override public function get measuredHeight():Number
-        {
-            return button.height;
+            button.label = str;
         }
         ]]>
 	</fx:Script>
 
-    <top:BarButton id="button" />
+    <s:Button id="button"
+              skinClass="skins.buttons.BarButtonSkin" />
     <top:BarButtonMenu id="menu"
                        items="{items}"
                        includeInLayout="false" />
