@@ -12,6 +12,8 @@
         [Bindable]
         public var rightAlign:Boolean;
 
+        private var show:Boolean;
+
         private function onComplete(event:FlexEvent):void
         {
             button.addEventListener(MouseEvent.MOUSE_OVER, onOver);
@@ -29,6 +31,7 @@
 
         private function onOver(event:MouseEvent):void
         {
+            show = true;
             menu.show();
             if (rightAlign)
                 menu.x = button.width - menu.contentGroup.width;
@@ -36,7 +39,11 @@
 
         private function onOut(event:MouseEvent):void
         {
-            menu.hide();
+            show = false;
+            setTimeout(function ():void
+            {
+                if (!show) menu.hide();
+            }, 200);
         }
 
         public function set label(str:String):void

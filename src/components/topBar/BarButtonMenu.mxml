@@ -3,6 +3,8 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          creationComplete="onComplete(event)">
     <fx:Script><![CDATA[
+        import com.greensock.TweenLite;
+
         import mx.events.FlexEvent;
 
         public var items:Array;
@@ -29,7 +31,7 @@
         {
             if (enabled)
             {
-                visible       = true;
+                TweenLite.to(this, .2, {alpha: 1});
                 mouseChildren = true;
                 mouseEnabled  = true;
             }
@@ -37,7 +39,7 @@
 
         public function hide():void
         {
-            visible       = false;
+            TweenLite.to(this, .2, {alpha: 0});
             mouseChildren = false;
             mouseEnabled  = false;
         }
