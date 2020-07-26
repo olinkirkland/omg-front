@@ -128,7 +128,7 @@
             // Initially, Open the Splash page
             signalManager.dispatch(SignalType.LOAD_PAGE, {type: PageType.SPLASH});
 
-            updateUserBar();
+            update();
         }
 
         private function onConnect(event:Event):void
@@ -233,15 +233,11 @@
 
         private function update():void
         {
-            // Update all
-            updateUserBar();
-        }
-
-        private function updateUserBar():void
-        {
             // Make sure the right stuff is visible
             guestGroup.visible   = guestGroup.includeInLayout = !client.isLoggedIn;
             profileGroup.visible = profileGroup.includeInLayout = !guestGroup.visible;
+
+            buttonFriends.visible = buttonFriends.includeInLayout = client.isLoggedIn;
 
             if (client.isLoggedIn)
             {
@@ -258,7 +254,8 @@
                 popup.end();
 
             buttonNameCard.label = me.name;
-            buttonFriends.label  = "" + me.friends.length;
+
+            buttonFriends.label = "" + me.friends.length;
         }
 
         public function clearQueuedPopup():void
